@@ -1,0 +1,35 @@
+@host=http://localhost:8080
+
+{{+request
+    request.headers['content-type'] = 'application/json';
+}}
+
+### retrieve private resource
+GET /private/test
+x-api-key: this-is-a-private-key
+
+### regiser
+POST /api/register
+{
+    "username": "tuanm",
+    "password": "123",
+    "email": "gmail@tuanm.dev",
+    "firstName": "Tuan",
+    "lastName": "Do"
+}
+
+### login
+# @name auth
+POST /api/authenticate
+{
+    "username": "tuanm",
+    "password": "123"
+}
+
+### generate
+# @ref auth
+GET /api/posts/generate
+    ?generator=lorem-ipsum
+    &total=50
+    &async=true
+authorization: Bearer {{auth.token}}
