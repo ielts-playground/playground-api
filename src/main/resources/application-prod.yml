@@ -1,0 +1,60 @@
+server:
+  security:
+    authentication:
+      whitelist:
+        - /public/**
+        - /test/**
+        - /swagger-ui.html
+      private:
+        path: /private/**
+        header-key: X-Api-Key
+        secret-keys:
+          - value: ${PRIVATE_KEY_BASIC_CLIENT}
+            name: Basic Client
+      jwt:
+        path: /api/**
+        validity-in-seconds: 3600
+        secret-key: ${JWT_KEY}
+
+api:
+  posts:
+    generator:
+      lorem-ipsum:
+        url: https://jaspervdj.be/lorem-markdownum/markdown.txt
+
+logging:
+  file:
+    name: logs/demo.log
+  level:
+    root: INFO
+    org.ielts.playground: DEBUG
+
+spring:
+  cache:
+    type: redis
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
+    ttl:
+      default-in-seconds: 3600
+      posts-view: 7200
+      posts-search: 300
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        # order_inserts: true
+        jpa:
+          batch_size: 10
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?useUnicode=true&characterEncoding=UTF-8
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  liquibase:
+    change-log: classpath:db/db.changelog-master.xml

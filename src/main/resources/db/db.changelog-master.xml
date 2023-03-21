@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+    <changeSet id="01-create-table-users" author="Tuanm">
+        <sqlFile
+            relativeToChangelogFile="true"
+            path="sql/01-create-table-users.sql"
+        />
+    </changeSet>
+    <changeSet id="02-create-table-roles" author="Tuanm">
+        <sqlFile
+            relativeToChangelogFile="true"
+            path="sql/02-create-table-roles.sql"
+        />
+    </changeSet>
+    <changeSet id="03-create-table-user-roles" author="Tuanm">
+        <sqlFile
+            relativeToChangelogFile="true"
+            path="sql/03-create-table-user-roles.sql"
+        />
+    </changeSet>
+    <changeSet id="04-insert-initial-roles" author="Tuanm">
+        <preConditions onFail="CONTINUE" onError="HALT">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM roles;
+            </sqlCheck>
+        </preConditions>
+        <sqlFile
+            relativeToChangelogFile="true"
+            path="sql/04-insert-initial-roles.sql"
+        />
+    </changeSet>
+</databaseChangeLog>
