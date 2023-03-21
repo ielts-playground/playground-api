@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
-import org.ielts.playground.common.constant.AuthorityConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -76,7 +75,7 @@ public class PrivateResourceUtils {
         if (key.isPresent()) {
             return Optional.ofNullable(this.keyMap.get(key.get()))
                     .map(PrivateProperties.SecretKey::getName)
-                    .orElse(AuthorityConstants.DEFAULT_CLIENT);
+                    .orElse(null);
         }
         return null;
     }

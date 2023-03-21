@@ -2,6 +2,7 @@ package org.ielts.playground.config;
 
 import java.time.Duration;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.ielts.playground.common.constant.CachingConstants;
 
 @Configuration
@@ -23,6 +27,25 @@ public class RedisConfig {
 
     public RedisConfig(RedisProperties redisProperties) {
         this.redisProperties = redisProperties;
+    }
+
+    @Getter
+    @Setter
+    @Configuration
+    @ConfigurationProperties(prefix = "spring.redis")
+    public static class RedisProperties {
+        private String host;
+        private Integer port;
+        private String password;
+        private TimeToLive ttl;
+
+        @Getter
+        @Setter
+        public static class TimeToLive {
+            private Long defaultInSeconds;
+            private Long postsView;
+            private Long postsSearch;
+        }
     }
 
     @Bean

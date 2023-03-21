@@ -76,7 +76,8 @@ public class JwtFilter implements Filter, AuthenticationChangeable, PathAuthenti
                                 if (this.requestChecker.isAdminPermitted(request)) {
                                     boolean authorized = authentication.getAuthorities().stream()
                                             .map(GrantedAuthority::getAuthority)
-                                            .anyMatch(authority -> Objects.equals(authority, AuthorityConstants.ROLE_ADMIN));
+                                            .anyMatch(authority -> Objects.equals(authority,
+                                                    AuthorityConstants.ROLE_ADMIN));
                                     if (!authorized) {
                                         this.setAuthentication(null);
                                     }

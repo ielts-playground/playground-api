@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.ielts.playground.common.exception.ResourceExistedException;
 import org.ielts.playground.model.dto.BasicUserDetails;
 import org.ielts.playground.model.entity.User;
 import org.ielts.playground.model.request.AuthenticationRequest;
@@ -51,17 +51,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(UserRegistrationRequest userRegistration) {
-        this.userRepository.findByUsername(userRegistration.getUsername())
-                .ifPresentOrElse(null, () -> {
-                    User user = User.builder()
-                            .username(userRegistration.getUsername())
-                            .password(this.passwordEncoder.encode(userRegistration.getPassword()))
-                            .email(userRegistration.getEmail())
-                            .firstName(userRegistration.getFirstName())
-                            .lastName(userRegistration.getLastName())
-                            .roles(new HashSet<>())
-                            .build();
-                    this.userRepository.save(user);
-                });
+        if (this.userRepository.findByUsername(userRegistration.getUsername()).isPresent()) {
+            throw new ResourceExistedException();
+        }
+
+        User user = User.builder()
+                .username(userRegistration.getUsername())
+                .password(this.passwordEncoder.encode(userRegistration.getPassword()))
+                .email(userRegistration.getEmail())
+                .firstName(userRegistration.getFirstName())
+                .lastName(userRegistration.getLastName())
+                .roles(new HashSet<>())
+                .build();
+        this.userRepository.save(user);
     }
 }

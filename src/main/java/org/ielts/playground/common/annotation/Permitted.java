@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Indicates a handler does not need to authorize.
  */
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Permitted {
 }

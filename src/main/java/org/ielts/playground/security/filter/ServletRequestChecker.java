@@ -31,8 +31,8 @@ public class ServletRequestChecker {
      * Tries to retrieve the annotation associated with the {@link HandlerMethod}
      * of a specific {@link HttpServletRequest}.
      *
-     * @param <T> the annotation type.
-     * @param request the request.
+     * @param <T>             the annotation type.
+     * @param request         the request.
      * @param annotationClass the annotation's class.
      * @return the annotation if it exists; otherwise, {@code null}.
      */

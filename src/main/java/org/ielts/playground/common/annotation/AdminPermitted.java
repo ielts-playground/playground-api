@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Indicates a handler accepts only requests from the Admins.
  */
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface AdminPermitted {
 }
