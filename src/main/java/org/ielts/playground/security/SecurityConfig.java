@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(whitelist).permitAll()
                 .anyRequest().authenticated();
 
-        http.csrf().disable().httpBasic();
+        http.csrf().disable();
     }
 
     @Getter

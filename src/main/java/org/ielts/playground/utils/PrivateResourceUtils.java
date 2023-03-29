@@ -68,8 +68,12 @@ public class PrivateResourceUtils {
         }
     }
 
+    public String getHeaderKey() {
+        return this.properties.getHeaderKey();
+    }
+
     public String retrieveRequestClient(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(properties.getHeaderKey()))
+        return Optional.ofNullable(request.getHeader(this.properties.getHeaderKey()))
                 .flatMap(key -> Optional.ofNullable(this.keyMap.get(key))
                 .map(PrivateProperties.SecretKey::getName))
                 .orElse(null);

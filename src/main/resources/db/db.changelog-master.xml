@@ -37,4 +37,64 @@
             path="sql/04-insert-initial-roles.sql"
         />
     </changeSet>
+    <changeSet id="05-create-table-test" author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/05-create-table-test.sql"
+        />
+    </changeSet>
+    <changeSet id="06-create-table-part" author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/06-create-table-part.sql"
+        />
+    </changeSet>
+    <changeSet id="07-create-table-test-audio" author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/07-create-table-test-audio.sql"
+        />
+    </changeSet>
+    <changeSet id="08-create-table-component" author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/08-create-table-component.sql"
+        />
+    </changeSet>
+    <changeSet id="09-create-table-component-type" author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/09-create-table-component-type.sql"
+        />
+    </changeSet>
+    <changeSet id="10-create-table-part-type" author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/10-create-table-part-type.sql"
+        />
+    </changeSet>
+    <changeSet id="11-create-table-part-answer" author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/11-create-table-part-answer.sql"
+        />
+    </changeSet>
+    <changeSet id="12-create-table-exam-part" author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/12-create-table-exam-part.sql"
+        />
+    </changeSet>
+    <changeSet id="13-create-table-exam" author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/13-create-table-exam.sql"
+        />
+    </changeSet>
+    <changeSet id="14-create-table-exam-answer" author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/14-create-table-exam-answer.sql"
+        />
+    </changeSet>
 </databaseChangeLog>

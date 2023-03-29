@@ -4,7 +4,7 @@ server:
       whitelist:
         - /public/**
         - /test/**
-        - /swagger-ui.html
+        - /swagger-ui/**
         - /api/v2/docs
       private:
         path: /private/**

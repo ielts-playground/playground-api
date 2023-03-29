@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS part_type (
+    value VARCHAR(255) NOT NULL
+);

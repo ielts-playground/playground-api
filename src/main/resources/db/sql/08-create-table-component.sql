@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS component (
+    id BIGINT AUTO_INCREMENT,
+    part_id BIGINT ,
+    position VARCHAR(255) NOT NULL,
+    type VARCHAR(255) NOT NULL,
+    kei VARCHAR(255) NOT NULL,
+    value VARCHAR(2048) NOT NULL,
+    size VARCHAR(255) NOT NULL,
+    options VARCHAR(2048) NOT NULL,
+    PRIMARY KEY (id)
+);

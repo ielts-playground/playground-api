@@ -8,6 +8,7 @@ public final class PathConstants {
     public static final String ALL_PATTERN = "/**";
     public static final String API_BASE_URL = "/api";
     public static final String PRIVATE_BASE_URL = "/private";
+    public static final String PUBLIC_BASE_URL = "/public";
     public static final String API_ADMIN_BASE_URL = API_BASE_URL + "/admin";
     public static final String JWT_AUTH_URL_PATTERN = API_BASE_URL + ALL_PATTERN;
     public static final String PRIVATE_AUTH_URL_PATTERN = PRIVATE_BASE_URL + ALL_PATTERN;
@@ -28,6 +29,9 @@ public final class PathConstants {
     public static final String API_USERS_INFO_URL = API_USERS_BASE_URL + "";
 
     public static final String PRIVATE_TEST_URL = PRIVATE_BASE_URL + "/test";
+    public static final String API_TEST_URL = API_BASE_URL + "/test";
+    public static final String API_ADMIN_TEST_URL = API_ADMIN_BASE_URL + "/test";
+    public static final String PUBLIC_TEST_URL = PUBLIC_BASE_URL + "/test";
 
     public static final String API_ADMIN_USERS_INFO_URL = API_ADMIN_BASE_URL + "/users/{username}";
 }
