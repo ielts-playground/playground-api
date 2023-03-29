@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS test_audio (
+    id BIGINT NOT NULL,
+    url VARCHAR(1024) NOT NULL
+);
