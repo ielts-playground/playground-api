@@ -1,10 +1,17 @@
 package org.ielts.playground.model.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-import lombok.*;
-
-import javax.persistence.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
@@ -12,7 +19,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "component")
-public class Component extends BaseEntity{
+public class Component extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
