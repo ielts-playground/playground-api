@@ -20,13 +20,13 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "test_audio")
-public class TestAudio extends BaseEntity{
+public class TestAudio extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "testId")
+    @Column(name = "test_id")
     private Long testId;
 
     @Column(name = "url")
