@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -31,6 +31,6 @@ public class Exam extends BaseEntity {
     private Long userId;
 
     @Column(name = "submitted_at")
-    private Timestamp submittedAt;
+    private LocalDateTime submittedAt;
 
 }
