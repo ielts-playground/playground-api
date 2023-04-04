@@ -1,5 +1,6 @@
 package org.ielts.playground.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,11 +17,18 @@ import java.util.Arrays;
 @EnableSwagger2
 @Configuration
 public class SwaggerConfig {
+    /**
+     * The server's hostname.
+     */
+    @Value("${server.host}")
+    private String host;
+
     private static final String AUTHORIZATION_HEADER_KEY = "Authorization";
 
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .host(this.host)
                 .globalRequestParameters(Arrays.asList(
                         new RequestParameterBuilder()
                                 .name(AUTHORIZATION_HEADER_KEY)
