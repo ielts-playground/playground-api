@@ -15,8 +15,8 @@ public class LocalDateTimeConverter implements AttributeConverter<LocalDateTime,
     private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern(DateTimeConstants.DATE_TIME_PATTERN);
 
     @Override
-    public String convertToDatabaseColumn(LocalDateTime value) {
-        return FORMATTER.print(value);
+    public String convertToDatabaseColumn(LocalDateTime dateTime) {
+        return FORMATTER.print(dateTime);
     }
 
     @Override

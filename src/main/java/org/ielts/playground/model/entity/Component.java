@@ -12,6 +12,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.ielts.playground.common.enumeration.ComponentType;
+import org.ielts.playground.model.entity.type.Map;
+import org.ielts.playground.model.entity.type.Size;
+import org.ielts.playground.model.entity.type.Text;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -25,7 +30,6 @@ public class Component extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
-
     @Column(name = "part_id")
     private Long partId;
 
@@ -33,18 +37,17 @@ public class Component extends BaseEntity {
     private String position;
 
     @Column(name = "type")
-    private String type;
+    private ComponentType type;
 
     @Column(name = "kei")
     private String kei;
 
     @Column(name = "value")
-    private String value;
+    private Text value;
 
     @Column(name = "size")
-    private String size;
+    private Size size;
 
     @Column(name = "options")
-    private String options;
-
+    private Map options;
 }

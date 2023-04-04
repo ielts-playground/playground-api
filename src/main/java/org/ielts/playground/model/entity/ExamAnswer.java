@@ -26,13 +26,12 @@ public class ExamAnswer extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "exam_id")
-    private Long examId;
+    @Column(name = "exam_part_id")
+    private Long examPartId;
 
     @Column(name = "number")
     private Long number;
 
     @Column(name = "value")
     private String value;
-
 }

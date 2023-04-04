@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.ielts.playground.common.enumeration.PartType;
 
 @Data
 @Builder
@@ -30,6 +31,5 @@ public class Part extends BaseEntity {
     private Long testId;
 
     @Column(name = "type")
-    private String type;
-
+    private PartType type;
 }

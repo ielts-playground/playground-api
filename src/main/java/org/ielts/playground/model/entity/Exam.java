@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
+import org.joda.time.LocalDateTime;
 
 @Data
 @Builder
@@ -32,5 +32,4 @@ public class Exam extends BaseEntity {
 
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
-
 }

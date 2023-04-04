@@ -34,5 +34,4 @@ public class Test extends BaseEntity {
 
     @Column(name = "active")
     private Boolean active;
-
 }

@@ -31,5 +31,4 @@ public class ExamPart {
 
     @Column(name = "part_id")
     private Long partId;
-
 }

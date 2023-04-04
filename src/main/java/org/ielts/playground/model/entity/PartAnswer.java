@@ -34,5 +34,4 @@ public class PartAnswer extends BaseEntity {
 
     @Column(name = "value")
     private String value;
-
 }
