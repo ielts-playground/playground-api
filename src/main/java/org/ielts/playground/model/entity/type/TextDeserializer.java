@@ -16,6 +16,7 @@ public final class TextDeserializer {
     public static Text parse(String value) {
         final List<Class<? extends Text>> classes = Arrays.asList(
                 Map.class,
+                Range.class,
                 Size.class);
         final ObjectMapper mapper = new ObjectMapper();
         for (Class<? extends Text> clazz : classes) {
