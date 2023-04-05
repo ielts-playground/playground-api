@@ -1,0 +1,29 @@
+services:
+  spring-boot:
+    container_name: ielts-playground-api
+    build:
+      context: ..
+    image: ielts-playground/playground-api:1.0
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - SWAGGER_BASE_URL=${SWAGGER_BASE_URL}
+      - PRIVATE_KEY_BASIC_CLIENT=${PRIVATE_KEY_BASIC_CLIENT}
+      - JWT_KEY=${JWT_KEY}
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USERNAME=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - ${PORT}:8080
+    networks:
+      - ielts-playground
+  internal-redis:
+    container_name: ielts-playground-api--redis
+    image: redis:7.0.10-alpine
+    networks:
+      - ielts-playground
+
+networks:
+  ielts-playground:
+    driver: bridge
