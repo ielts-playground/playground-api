@@ -5,17 +5,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 public final class TextDeserializer {
-    private TextDeserializer() {}
+    private TextDeserializer() {
+    }
 
     /**
      * Tries converting a text to a {@link Text}.
+     *
      * @param value the text.
      * @return the {@link Text} if converted; otherwise. {@code null}.
      */
-    public static Text parse(String value) {
+    @SuppressWarnings("unchecked")
+    public static Text parse(@NotNull Object value) {
         final List<Class<? extends Text>> classes = Arrays.asList(
-                Map.class,
                 Range.class,
                 Size.class);
         final ObjectMapper mapper = new ObjectMapper();
@@ -26,6 +30,9 @@ public final class TextDeserializer {
                 // ignore
             }
         }
-        return null;
+        if (value instanceof java.util.Map) {
+            return new Map(java.util.Map.class.cast(value));
+        }
+        return new Raw(value.toString());
     }
 }

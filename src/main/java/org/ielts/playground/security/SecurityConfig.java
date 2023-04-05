@@ -60,11 +60,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.antMatcher(((PathAuthorizable) filter).getPath())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests()
-                .antMatchers(whitelist).permitAll()
-                .anyRequest().authenticated();
+                .authorizeRequests(requests -> requests
+                        .antMatchers(whitelist).permitAll()
+                        .anyRequest().authenticated());
 
-        http.csrf().disable();
+        http.csrf(csrf -> csrf.disable());
     }
 
     @Getter

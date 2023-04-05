@@ -1,9 +1,10 @@
 package org.ielts.playground.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.context.annotation.Profile;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.RequestParameterBuilder;
@@ -16,19 +17,20 @@ import java.util.Arrays;
 
 @EnableSwagger2
 @Configuration
+@ConfigurationProperties(prefix = "swagger")
+@Profile({ "dev", "default" })
 public class SwaggerConfig {
     /**
-     * The server's hostname.
+     * The Swagger's base URL.
      */
-    @Value("${server.host}")
-    private String host;
+    private String baseUrl;
 
     private static final String AUTHORIZATION_HEADER_KEY = "Authorization";
 
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .host(this.host)
+                .host(this.baseUrl)
                 .globalRequestParameters(Arrays.asList(
                         new RequestParameterBuilder()
                                 .name(AUTHORIZATION_HEADER_KEY)

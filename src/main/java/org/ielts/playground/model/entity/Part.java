@@ -32,4 +32,7 @@ public class Part extends BaseEntity {
 
     @Column(name = "type")
     private PartType type;
+
+    @Column(name = "number")
+    private Long number;
 }

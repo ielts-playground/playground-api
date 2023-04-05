@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.ielts.playground.model.dto.BasicUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,13 @@ public class SecurityUtils {
     public String getLoggedUsername() {
         return Optional.ofNullable(getLoggedUserDetails())
                 .map(UserDetails::getUsername)
+                .orElse(null);
+    }
+
+    public Long getLoggedUserId() {
+        return Optional.ofNullable(getLoggedUserDetails())
+                .map(BasicUserDetails.class::cast)
+                .map(BasicUserDetails::getId)
                 .orElse(null);
     }
 

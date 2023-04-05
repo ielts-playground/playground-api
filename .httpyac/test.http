@@ -1,12 +1,8 @@
-@host=http://localhost:8080
+@host={{BASE_URL}}
 
 {{+request
     request.headers['content-type'] = 'application/json';
 }}
-
-### retrieve private resource
-GET /private/test
-x-api-key: this-is-a-private-key
 
 ### regiser
 POST /api/register
@@ -33,3 +29,9 @@ GET /api/posts/generate
     &total=50
     &async=true
 authorization: Bearer {{auth.token}}
+
+### create test
+# @ref auth
+PUT /api/test
+authorization: Bearer {{auth.token}}
+< ./test/creation.json

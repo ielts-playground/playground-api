@@ -6,10 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 
 public class Map extends Text {
-    private final java.util.Map<String, String> map;
+    private final java.util.Map<String, String> internal;
 
     public Map() {
-        this.map = new HashMap<>();
+        this.internal = new HashMap<>();
+    }
+
+    public Map(java.util.Map<String, String> internal) {
+        this.internal = internal;
     }
 
     /**
@@ -19,7 +23,7 @@ public class Map extends Text {
      * @param value the value.
      */
     public void set(String key, String value) {
-        this.map.put(key, value);
+        this.internal.put(key, value);
     }
 
     /**
@@ -27,13 +31,14 @@ public class Map extends Text {
      * @param key the key.
      */
     public String get(String key) {
-        return this.map.get(key);
+        return this.internal.get(key);
     }
 
+    @SuppressWarnings("java:S2225")
     @Override
     public String toString() {
         try {
-            return new ObjectMapper().writeValueAsString(this.map);
+            return new ObjectMapper().writeValueAsString(this.internal);
         } catch (JsonProcessingException ex) {
             return null;
         }

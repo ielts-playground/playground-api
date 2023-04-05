@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "roles", uniqueConstraints = {
+@Table(name = "role", uniqueConstraints = {
         @UniqueConstraint(columnNames = "name")
 })
 public class Role extends BaseEntity implements GrantedAuthority {

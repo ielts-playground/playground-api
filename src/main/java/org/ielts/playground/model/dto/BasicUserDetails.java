@@ -10,11 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.ielts.playground.model.entity.Role;
 import org.ielts.playground.model.entity.User;
 
+import javax.validation.constraints.NotNull;
+
 public class BasicUserDetails implements UserDetails {
     @SuppressWarnings("java:S1948")
     private final User user;
 
-    public BasicUserDetails(User user) {
+    public BasicUserDetails(@NotNull User user) {
         this.user = user;
     }
 
@@ -24,6 +26,10 @@ public class BasicUserDetails implements UserDetails {
                 .map(Role::getAuthority)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+    }
+
+    public Long getId() {
+        return this.user.getId();
     }
 
     @Override

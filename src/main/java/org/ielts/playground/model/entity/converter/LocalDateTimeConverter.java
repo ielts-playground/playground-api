@@ -4,13 +4,11 @@ import org.ielts.playground.common.constant.DateTimeConstants;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-@Component
-@Converter
+@Converter(autoApply = true)
 public class LocalDateTimeConverter implements AttributeConverter<LocalDateTime, String> {
     private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern(DateTimeConstants.DATE_TIME_PATTERN);
 

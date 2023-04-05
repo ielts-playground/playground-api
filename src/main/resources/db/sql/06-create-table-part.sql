@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS part (
     id BIGINT AUTO_INCREMENT,
-    test_id BIGINT ,
+    test_id BIGINT NOT NULL,
     type VARCHAR(255) NOT NULL,
     number BIGINT,
     PRIMARY KEY (id)

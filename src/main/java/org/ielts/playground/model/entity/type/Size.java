@@ -2,21 +2,23 @@ package org.ielts.playground.model.entity.type;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Map;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Size extends Text {
-    @Getter
-    private final Double width;
-    @Getter
-    private final Double height;
+    private Double width;
+    private Double height;
 
-    public Size(Double width, Double height) {
-        this.width = width;
-        this.height = height;
-    }
-
+    @SuppressWarnings("java:S2225")
     @Override
     public String toString() {
         try {

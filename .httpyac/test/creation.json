@@ -1,0 +1,92 @@
+{
+    "skill": "reading",
+    "components": [
+        {
+            "number": 1,
+            "type": "title",
+            "value": "How to become a better version of yourself?"
+        },
+        {
+            "number": 1,
+            "type": "text",
+            "value": "To answer this question, you should follow these steps:"
+        },
+        {
+            "number": 1,
+            "type": "options",
+            "kei": "opt-1",
+            "value": {
+                "1": "Drink more water.",
+                "2": "Use healthy beverage.",
+                "3": "Go to sleep earlier."
+            }
+        },
+        {
+            "number": 2,
+            "type": "range",
+            "value": {
+                "from": 1,
+                "to": 3
+            }
+        },
+        {
+            "number": 2,
+            "type": "text",
+            "value": "Choose *TRUE* if you agree with the statement, *FALSE* if not, or *NOT GIVEN* if you don't give a shit about it."
+        },
+        {
+            "number": 2,
+            "type": "question",
+            "kei": "1",
+            "value": "Are you dumb?",
+            "options": {
+                "TRUE": "",
+                "FALSE": "",
+                "NOT GIVEN": ""
+            }
+        },
+        {
+            "number": 2,
+            "type": "question",
+            "kei": "2",
+            "value": "You made some dirty actions behind my back?",
+            "options": {
+                "TRUE": "",
+                "FALSE": "",
+                "NOT GIVEN": ""
+            }
+        },
+        {
+            "number": 2,
+            "type": "question",
+            "kei": "3",
+            "value": "You are bringing up a dog?",
+            "options": {
+                "TRUE": "",
+                "FALSE": "",
+                "NOT GIVEN": ""
+            }
+        },
+        {
+            "number": 3,
+            "type": "image",
+            "value": "https://picsum.photos/200/300",
+            "size": {
+                "width": 200,
+                "height": 300
+            }
+        },
+        {
+            "number": 3,
+            "type": "question",
+            "kei": "4",
+            "value": "What's my name?",
+            "options": {
+                "A": "Ronaldo",
+                "B": "Bruno",
+                "C": "Cristiano",
+                "D": "Daniel"
+            }
+        }
+    ]
+}

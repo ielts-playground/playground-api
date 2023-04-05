@@ -17,6 +17,9 @@ server:
         validity-in-seconds: 3600
         secret-key: ${JWT_KEY}
 
+swagger:
+  base-url: ${SWAGGER_BASE_URL}
+
 api:
   posts:
     generator:

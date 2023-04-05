@@ -1,6 +1,6 @@
 package org.ielts.playground.service.impl;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -55,13 +55,13 @@ public class UserServiceImpl implements UserService {
             throw new ResourceExistedException();
         }
 
-        User user = User.builder()
+        final User user = User.builder()
                 .username(userRegistration.getUsername())
                 .password(this.passwordEncoder.encode(userRegistration.getPassword()))
                 .email(userRegistration.getEmail())
                 .firstName(userRegistration.getFirstName())
                 .lastName(userRegistration.getLastName())
-                .roles(new HashSet<>())
+                .roles(Collections.emptySet())
                 .build();
         this.userRepository.save(user);
     }
