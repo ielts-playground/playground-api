@@ -1,11 +1,8 @@
 @host={{BASE_URL}}
 
-{{+request
-    request.headers['content-type'] = 'application/json';
-}}
-
 ### regiser
 POST /api/register
+content-type: application/json
 {
     "username": "tuanm",
     "password": "123",
@@ -17,6 +14,7 @@ POST /api/register
 ### login
 # @name auth
 POST /api/authenticate
+content-type: application/json
 {
     "username": "tuanm",
     "password": "123"
@@ -29,9 +27,22 @@ GET /api/posts/generate
     &total=50
     &async=true
 authorization: Bearer {{auth.token}}
+content-type: application/json
 
 ### create test
 # @ref auth
 PUT /api/test
 authorization: Bearer {{auth.token}}
+content-type: multipart/form-data; boundary=WebKitFormBoundary
+
+--WebKitFormBoundary
+content-disposition: form-data; name="content"
+content-type: application/json
+
 < ./test/creation.json
+--WebKitFormBoundary
+content-disposition: form-data; name="audio"; filename="pepelaugh.png"
+content-type: image/png
+
+< ./test/pepelaugh.png
+--WebKitFormBoundary--

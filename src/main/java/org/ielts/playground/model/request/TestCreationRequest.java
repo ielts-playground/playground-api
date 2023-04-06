@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.ielts.playground.model.entity.type.Map;
 import org.ielts.playground.model.entity.type.Size;
 import org.ielts.playground.model.entity.type.Text;
+import org.springframework.lang.Nullable;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -24,6 +26,9 @@ public class TestCreationRequest {
 
     @NotNull
     private List<PartAnswer> answers;
+
+    @Nullable
+    private MultipartFile audio;
 
     @Data
     @AllArgsConstructor

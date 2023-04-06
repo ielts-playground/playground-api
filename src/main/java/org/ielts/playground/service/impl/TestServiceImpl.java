@@ -9,11 +9,13 @@ import org.ielts.playground.model.entity.Component;
 import org.ielts.playground.model.entity.Part;
 import org.ielts.playground.model.entity.PartAnswer;
 import org.ielts.playground.model.entity.Test;
+import org.ielts.playground.model.entity.TestAudio;
 import org.ielts.playground.model.request.TestCreationRequest;
 import org.ielts.playground.model.response.TestCreationResponse;
 import org.ielts.playground.repository.ComponentRepository;
 import org.ielts.playground.repository.PartAnswerRepository;
 import org.ielts.playground.repository.PartRepository;
+import org.ielts.playground.repository.TestAudioRepository;
 import org.ielts.playground.repository.TestRepository;
 import org.ielts.playground.service.TestService;
 import org.ielts.playground.utils.SecurityUtils;
@@ -21,12 +23,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
@@ -37,6 +42,7 @@ public class TestServiceImpl implements TestService {
     private final PartRepository partRepository;
     private final ComponentRepository componentRepository;
     private final PartAnswerRepository partAnswerRepository;
+    private final TestAudioRepository testAudioRepository;
     private final ModelMapper modelMapper;
     private final SecurityUtils securityUtils;
 
@@ -45,11 +51,13 @@ public class TestServiceImpl implements TestService {
             PartRepository partRepository,
             ComponentRepository componentRepository,
             PartAnswerRepository partAnswerRepository,
+            TestAudioRepository testAudioRepository,
             ModelMapper modelMapper, SecurityUtils securityUtils) {
         this.testRepository = testRepository;
         this.partRepository = partRepository;
         this.componentRepository = componentRepository;
         this.partAnswerRepository = partAnswerRepository;
+        this.testAudioRepository = testAudioRepository;
         this.modelMapper = modelMapper;
         this.securityUtils = securityUtils;
     }
@@ -62,6 +70,11 @@ public class TestServiceImpl implements TestService {
             throw new BadRequestException(ValidationConstants.PART_TYPE_INVALID);
         }
 
+        final MultipartFile audio = request.getAudio();
+        if (PartType.LISTENING.equals(type) && Objects.isNull(audio)) {
+            throw new BadRequestException(ValidationConstants.AUDIO_MISSING);
+        }
+
         final Long testId = this.testRepository.save(Test.builder()
                 .createdBy(this.securityUtils.getLoggedUserId())
                 .active(Boolean.TRUE)
@@ -69,6 +82,9 @@ public class TestServiceImpl implements TestService {
 
         final Map<Long, Long> partIds = this.createComponents(testId, type, request.getComponents());
         this.createAnswers(partIds, request.getAnswers());
+        if (!Objects.isNull(audio)) {
+            this.saveAudio(testId, audio);
+        }
 
         return TestCreationResponse.builder()
                 .id(testId)
@@ -132,6 +148,25 @@ public class TestServiceImpl implements TestService {
             if (!answers.isEmpty()) {
                 this.partAnswerRepository.saveAll(answers);
             }
+        } catch (Exception ex) {
+            throw new InternalServerException(ex.getMessage(), ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void saveAudio(
+            @NotNull final Long testId,
+            @NotNull final MultipartFile audio) {
+        try {
+            final String name = Optional.ofNullable(audio.getOriginalFilename())
+                    .map(StringUtils::cleanPath)
+                    .orElse(null);
+            this.testAudioRepository.save(TestAudio.builder()
+                    .testId(testId)
+                    .name(name)
+                    .type(audio.getContentType())
+                    .data(audio.getBytes())
+                    .build());
         } catch (Exception ex) {
             throw new InternalServerException(ex.getMessage(), ex);
         }
