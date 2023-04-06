@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -29,6 +30,13 @@ public class TestAudio extends BaseEntity {
     @Column(name = "test_id")
     private Long testId;
 
-    @Column(name = "url")
-    private String url;
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "type")
+    private String type;
+
+    @Lob
+    @Column(name = "data")
+    private byte[] data;
 }

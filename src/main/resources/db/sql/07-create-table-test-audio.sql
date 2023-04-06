@@ -1,4 +1,8 @@
 CREATE TABLE IF NOT EXISTS test_audio (
     id BIGINT NOT NULL,
-    url VARCHAR(1024) NOT NULL
+    test_id BIGINT NOT NULL,
+    name VARCHAR(1024) NOT NULL,
+    type VARCHAR(1024) NOT NULL,
+    data BLOB NOT NULL,
+    PRIMARY KEY (id)
 );
