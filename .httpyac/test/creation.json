@@ -2,17 +2,17 @@
     "skill": "reading",
     "components": [
         {
-            "number": 1,
+            "part": 1,
             "type": "title",
             "value": "How to become a better version of yourself?"
         },
         {
-            "number": 1,
+            "part": 1,
             "type": "text",
             "value": "To answer this question, you should follow these steps:"
         },
         {
-            "number": 1,
+            "part": 1,
             "type": "options",
             "kei": "opt-1",
             "value": {
@@ -22,7 +22,7 @@
             }
         },
         {
-            "number": 2,
+            "part": 2,
             "type": "range",
             "value": {
                 "from": 1,
@@ -30,12 +30,12 @@
             }
         },
         {
-            "number": 2,
+            "part": 2,
             "type": "text",
             "value": "Choose *TRUE* if you agree with the statement, *FALSE* if not, or *NOT GIVEN* if you don't give a shit about it."
         },
         {
-            "number": 2,
+            "part": 2,
             "type": "question",
             "kei": "1",
             "value": "Are you dumb?",
@@ -46,7 +46,7 @@
             }
         },
         {
-            "number": 2,
+            "part": 2,
             "type": "question",
             "kei": "2",
             "value": "You made some dirty actions behind my back?",
@@ -57,7 +57,7 @@
             }
         },
         {
-            "number": 2,
+            "part": 2,
             "type": "question",
             "kei": "3",
             "value": "You are bringing up a dog?",
@@ -68,7 +68,7 @@
             }
         },
         {
-            "number": 3,
+            "part": 3,
             "type": "image",
             "value": "https://picsum.photos/200/300",
             "size": {
@@ -77,7 +77,7 @@
             }
         },
         {
-            "number": 3,
+            "part": 3,
             "type": "question",
             "kei": "4",
             "value": "What's my name?",
@@ -87,6 +87,28 @@
                 "C": "Cristiano",
                 "D": "Daniel"
             }
+        }
+    ],
+    "answers": [
+        {
+            "part": 2,
+            "kei": "1",
+            "value": "FALSE"
+        },
+        {
+            "part": 2,
+            "kei": "2",
+            "value": "NOT GIVEN"
+        },
+        {
+            "part": 2,
+            "kei": "3",
+            "value": "TRUE"
+        },
+        {
+            "part": 3,
+            "kei": "4",
+            "value": "C"
         }
     ]
 }

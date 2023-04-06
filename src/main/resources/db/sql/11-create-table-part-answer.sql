@@ -1,5 +1,7 @@
 CREATE TABLE IF NOT EXISTS part_answer (
+    id BIGINT AUTO_INCREMENT,
     part_id BIGINT NOT NULL,
-    number BIGINT NOT NULL,
-    value VARCHAR(255) NOT NULL
+    kei VARCHAR(255) NOT NULL,
+    value VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
 );

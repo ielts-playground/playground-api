@@ -29,8 +29,8 @@ public class PartAnswer extends BaseEntity {
     @Column(name = "part_id")
     private Long partId;
 
-    @Column(name = "number")
-    private Long number;
+    @Column(name = "kei")
+    private String kei;
 
     @Column(name = "value")
     private String value;

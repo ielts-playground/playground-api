@@ -22,16 +22,29 @@ public class TestCreationRequest {
     @NotNull
     private List<PartComponent> components;
 
+    @NotNull
+    private List<PartAnswer> answers;
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
     public static class PartComponent {
-        private Long number;
+        private Long part;
         private String type;
         private String kei;
         private Text value;
         private Size size;
         private Map options;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class PartAnswer {
+        private Long part;
+        private String kei;
+        private String value;
     }
 }
