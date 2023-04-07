@@ -16,12 +16,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
+import org.springframework.web.cors.CorsConfiguration;
 import org.ielts.playground.security.filter.PrivateResourceFilter;
 import org.ielts.playground.security.filter.ServletRequestChecker;
 import org.ielts.playground.security.filter.JwtFilter;
 import org.ielts.playground.security.filter.PathAuthorizable;
 import org.ielts.playground.utils.PrivateResourceUtils;
+import org.ielts.playground.utils.CollectionUtils;
 import org.ielts.playground.utils.JwtUtils;
 
 import lombok.Getter;
@@ -54,7 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     protected void configureWithFilter(HttpSecurity http, Filter filter) throws Exception {
-        final String[] whitelist = Optional.ofNullable(this.properties.getWhitelist())
+        final String[] whitelist = Optional.ofNullable(this.properties.getAuthentication())
+                .map(SecurityProperties.Authentication::getWhitelist)
                 .map(list -> list.toArray(new String[0]))
                 .orElse(new String[] {});
 
@@ -64,15 +66,58 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .antMatchers(whitelist).permitAll()
                         .anyRequest().authenticated());
 
-        http.csrf(csrf -> csrf.disable());
+        http.cors(c -> c.configurationSource(s -> {
+            CorsConfiguration config = new CorsConfiguration();
+            Optional.ofNullable(this.properties.getCors()).ifPresent(cors -> {
+                config.setAllowedMethods(CollectionUtils.emptyIfNull(cors.getMethods()));
+                config.setAllowedHeaders(CollectionUtils.emptyIfNull(cors.getHeaders()));
+                config.setAllowedOrigins(CollectionUtils.emptyIfNull(cors.getOrigins()));
+            });
+            return config;
+        }));
+
+        http.csrf(c -> c.disable());
     }
 
     @Getter
     @Setter
     @Configuration
-    @ConfigurationProperties(prefix = "server.security.authentication")
+    @ConfigurationProperties(prefix = "server.security")
     public static class SecurityProperties {
-        private List<String> whitelist;
+        /**
+         * Filtering configurations.
+         */
+        private Authentication authentication;
+        /**
+         * CORS configurations.
+         */
+        private Cors cors;
+
+        @Getter
+        @Setter
+        public static class Authentication {
+            /**
+             * The list of URLs do not need to be authorized.
+             */
+            private List<String> whitelist;
+        }
+
+        @Getter
+        @Setter
+        public static class Cors {
+            /**
+             * The allowed headers.
+             */
+            private List<String> headers;
+            /**
+             * The allowed methods.
+             */
+            private List<String> methods;
+            /**
+             * The allowed origins.
+             */
+            private List<String> origins;
+        }
     }
 
     @Order(1)
