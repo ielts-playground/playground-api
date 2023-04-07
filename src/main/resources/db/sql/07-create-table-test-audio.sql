@@ -3,6 +3,6 @@ CREATE TABLE IF NOT EXISTS test_audio (
     test_id BIGINT NOT NULL,
     name VARCHAR(1024) NOT NULL,
     type VARCHAR(1024) NOT NULL,
-    data BLOB NOT NULL,
+    data LONGBLOB NOT NULL,
     PRIMARY KEY (id)
 );
