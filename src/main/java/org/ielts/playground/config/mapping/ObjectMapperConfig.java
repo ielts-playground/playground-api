@@ -28,6 +28,7 @@ public class ObjectMapperConfig {
     public ObjectMapper objectMapper() {
         return new ObjectMapperWrapper(new ObjectMapper())
                 .supportDeserializingText()
+                .ignoreUnknownFields()
                 .permitEmptyStringAsNullValue()
                 .getMapper();
     }
@@ -68,6 +69,11 @@ public class ObjectMapperConfig {
 
         public ObjectMapperWrapper permitEmptyStringAsNullValue() {
             this.mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+            return this;
+        }
+
+        public ObjectMapperWrapper ignoreUnknownFields() {
+            this.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             return this;
         }
     }
