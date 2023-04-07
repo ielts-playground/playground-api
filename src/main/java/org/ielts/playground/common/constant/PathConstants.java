@@ -36,4 +36,5 @@ public final class PathConstants {
     public static final String API_ADMIN_USERS_INFO_URL = API_ADMIN_BASE_URL + "/users/{username}";
 
     public static final String API_TEST_CREATION_URL = API_BASE_URL + "/test";
+    public static final String API_TEST_AUDIO_URL = API_BASE_URL + "/test/{id}/audio";
 }

@@ -54,7 +54,7 @@ public class JwtFilter implements Filter, AuthenticationChangeable, PathAuthoriz
 
     private Authentication validate(String username, String token) {
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-        if (utils.isTokenValid(token, userDetails)) {
+        if (!utils.isTokenExpired(token)) {
             return new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
@@ -71,7 +71,7 @@ public class JwtFilter implements Filter, AuthenticationChangeable, PathAuthoriz
                     if (token.isPresent()) {
                         try {
                             String username = this.utils.getUsernameFromToken(token.get());
-                            Optional.ofNullable(this.validate(username, token.get())).ifPresent(authentication -> {
+                            Optional.ofNullable(this.validate(username, token.get())).ifPresentOrElse(authentication -> {
                                 this.setAuthentication(authentication);
                                 if (this.requestChecker.isAdminRequired(request)) {
                                     boolean authorized = authentication.getAuthorities().stream()
@@ -82,7 +82,7 @@ public class JwtFilter implements Filter, AuthenticationChangeable, PathAuthoriz
                                         this.setAuthentication(null);
                                     }
                                 }
-                            });
+                            }, () -> this.setAuthentication(null));
                         } catch (ExpiredJwtException ex) {
                             this.setAuthentication(null);
                         }

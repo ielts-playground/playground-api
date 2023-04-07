@@ -47,6 +47,7 @@ public class RedisConfig {
             private Long defaultInSeconds;
             private Long postsView;
             private Long postsSearch;
+            private Long testAudioGet;
         }
     }
 
@@ -70,12 +71,15 @@ public class RedisConfig {
                 .entryTtl(Duration.ofSeconds(redisProperties.getTtl().getPostsView()));
         RedisCacheConfiguration postsSearchConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(redisProperties.getTtl().getPostsSearch()));
+        RedisCacheConfiguration testAudioGetConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofSeconds(redisProperties.getTtl().getTestAudioGet()));
 
         return RedisCacheManager
                 .builder(factory)
                 .cacheDefaults(defaultConfiguration)
                 .withCacheConfiguration(CachingConstants.POST_VIEW_CACHE_NAME, postsViewConfiguration)
                 .withCacheConfiguration(CachingConstants.POST_SEARCH_CACHE_NAME, postsSearchConfiguration)
+                .withCacheConfiguration(CachingConstants.TEST_AUDIO_GET_CACHE_NAME, testAudioGetConfiguration)
                 .build();
     }
 }

@@ -6,24 +6,16 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import org.ielts.playground.common.exception.BaseWebException;
-import org.ielts.playground.common.exception.UnauthorizedRequestException;
-import org.ielts.playground.common.message.UserMessages;
 import org.ielts.playground.model.response.ErrorResponse;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @ControllerAdvice
 public class ExceptionController {
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public void handleUsernameNotFoundRequest(UsernameNotFoundException ex, HttpServletRequest request) {
-        throw new UnauthorizedRequestException(UserMessages.USERNAME_NOT_FOUND, ex);
-    }
-
     @ExceptionHandler(BaseWebException.class)
     public ResponseEntity<ErrorResponse> handleErrorRequest(BaseWebException ex, HttpServletRequest request) {
         return ResponseEntity.status(ex.getHttpStatus())

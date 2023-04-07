@@ -89,7 +89,7 @@ public class JwtUtils implements Serializable {
      * @param token the token.
      * @return {@code true} if the token is expired; otherwise {@code false}.
      */
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return Optional.ofNullable(getExpirationFromToken(token))
                 .map(expiration -> expiration.before(new Date()))
                 .orElse(true);
