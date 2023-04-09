@@ -12,7 +12,7 @@ import org.ielts.playground.model.entity.Test;
 import org.ielts.playground.model.entity.TestAudio;
 import org.ielts.playground.model.request.TestCreationRequest;
 import org.ielts.playground.model.response.TestCreationResponse;
-import org.ielts.playground.repository.ComponentRepository;
+import org.ielts.playground.repository.ComponentWriteRepository;
 import org.ielts.playground.repository.PartAnswerRepository;
 import org.ielts.playground.repository.PartRepository;
 import org.ielts.playground.repository.TestAudioRepository;
@@ -40,7 +40,7 @@ import javax.validation.constraints.NotNull;
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
     private final PartRepository partRepository;
-    private final ComponentRepository componentRepository;
+    private final ComponentWriteRepository componentWriteRepository;
     private final PartAnswerRepository partAnswerRepository;
     private final TestAudioRepository testAudioRepository;
     private final ModelMapper modelMapper;
@@ -49,13 +49,13 @@ public class TestServiceImpl implements TestService {
     public TestServiceImpl(
             TestRepository testRepository,
             PartRepository partRepository,
-            ComponentRepository componentRepository,
+            ComponentWriteRepository componentWriteRepository,
             PartAnswerRepository partAnswerRepository,
             TestAudioRepository testAudioRepository,
             ModelMapper modelMapper, SecurityUtils securityUtils) {
         this.testRepository = testRepository;
         this.partRepository = partRepository;
-        this.componentRepository = componentRepository;
+        this.componentWriteRepository = componentWriteRepository;
         this.partAnswerRepository = partAnswerRepository;
         this.testAudioRepository = testAudioRepository;
         this.modelMapper = modelMapper;
@@ -121,7 +121,7 @@ public class TestServiceImpl implements TestService {
                 partIds.put(entry.getKey(), part.getId());
             }
             if (!components.isEmpty()) {
-                this.componentRepository.saveAll(components);
+                this.componentWriteRepository.saveAll(components);
             }
         } catch (Exception ex) {
             throw new InternalServerException(ex.getMessage(), ex);

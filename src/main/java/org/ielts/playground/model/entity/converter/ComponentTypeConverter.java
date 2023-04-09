@@ -1,11 +1,15 @@
 package org.ielts.playground.model.entity.converter;
 
 import org.ielts.playground.common.enumeration.ComponentType;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Optional;
 
+@Lazy
+@Component
 @Converter(autoApply = true)
 public class ComponentTypeConverter implements AttributeConverter<ComponentType, String> {
     @Override

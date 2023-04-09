@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ import org.ielts.playground.model.response.PostInfoResponse;
 import org.ielts.playground.service.PostService;
 import org.ielts.playground.utils.CSV;
 
+@Profile({ "local" })
 @RestController
 public class PostController {
     private final PostService postService;
