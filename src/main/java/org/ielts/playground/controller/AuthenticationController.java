@@ -1,7 +1,6 @@
 package org.ielts.playground.controller;
 
-import javax.validation.constraints.NotNull;
-
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +27,7 @@ public class AuthenticationController {
     @PermitAll
     @PostMapping(PathConstants.API_AUTHENTICATION_URL)
     public JwtResponse authenticate(
-            @RequestBody @NotNull AuthenticationRequest request) {
+            @Validated @RequestBody AuthenticationRequest request) {
         return this.userService.exists(request)
                 .map(userDetails -> {
                     String token = this.jwtUtils.generateToken(userDetails);
@@ -40,7 +39,7 @@ public class AuthenticationController {
     @RequireAdmin
     @PostMapping(PathConstants.API_REGISTRATION_URL)
     public void register(
-            @RequestBody @NotNull UserRegistrationRequest userRegistrationRequest) {
+            @Validated @RequestBody UserRegistrationRequest userRegistrationRequest) {
         this.userService.createUser(userRegistrationRequest);
     }
 }

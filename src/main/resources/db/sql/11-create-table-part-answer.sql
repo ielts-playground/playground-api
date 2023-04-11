@@ -3,5 +3,7 @@ CREATE TABLE IF NOT EXISTS part_answer (
     part_id BIGINT NOT NULL,
     kei VARCHAR(255) NOT NULL,
     value TEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT NOW(),
+    modified_at DATETIME NOT NULL DEFAULT NOW(),
     PRIMARY KEY (id)
 );

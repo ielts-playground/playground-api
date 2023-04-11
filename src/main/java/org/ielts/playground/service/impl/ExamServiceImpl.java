@@ -1,6 +1,7 @@
 package org.ielts.playground.service.impl;
 
 import org.ielts.playground.common.constant.ValidationConstants;
+import org.ielts.playground.common.exception.BadRequestException;
 import org.ielts.playground.common.exception.NotFoundException;
 import org.ielts.playground.model.entity.ExamAnswer;
 import org.ielts.playground.model.request.ExamSubmissionRequest;
@@ -34,6 +35,9 @@ public class ExamServiceImpl implements ExamService {
         final Long examPartId = request.getExamPartId();
         if (this.examPartRepository.findById(examPartId).isEmpty()) {
             throw new NotFoundException(ValidationConstants.EXAM_PART_NOT_FOUND);
+        }
+        if (this.examAnswerRepository.existsByExamPartId(examPartId)) {
+            throw new BadRequestException(ValidationConstants.EXAM_PART_ALREADY_ANSWERED);
         }
 
         final List<ExamAnswer> examAnswers = new ArrayList<>();

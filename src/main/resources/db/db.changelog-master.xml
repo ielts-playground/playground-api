@@ -8,6 +8,28 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+    <changeSet id="00-create-table-oh-my-error" author="Tuanm">
+        <preConditions onFail="MARK_RAN" onError="WARN">
+            <not>
+                <tableExists tableName="oh_my_error"/>
+            </not>
+        </preConditions>
+        <createTable tableName="oh_my_error">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="path" type="varchar(255)"/>
+            <column name="http_method" type="varchar(255)"/>
+            <column name="http_status" type="int"/>
+            <column name="app_method" type="varchar(255)"/>
+            <column name="params" type="varchar(1024)"/>
+            <column name="message" type="varchar(1024)"/>
+            <column name="stack_trace" type="text"/>
+            <column name="async" type="boolean" defaultValueBoolean="false"/>
+            <column name="created_at" type="datetime" defaultValueDate="NOW()"/>
+            <column name="modified_at" type="datetime" defaultValueDate="NOW()"/>
+        </createTable>
+    </changeSet>
     <changeSet id="01-create-table-user" author="Tuanm">
         <sqlFile
             relativeToChangelogFile="true"

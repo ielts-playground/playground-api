@@ -3,5 +3,7 @@ CREATE TABLE IF NOT EXISTS part (
     test_id BIGINT NOT NULL,
     type VARCHAR(255) NOT NULL,
     number BIGINT,
+    created_at DATETIME NOT NULL DEFAULT NOW(),
+    modified_at DATETIME NOT NULL DEFAULT NOW(),
     PRIMARY KEY (id)
 );

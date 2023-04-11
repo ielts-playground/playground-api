@@ -14,4 +14,5 @@ public class ErrorResponse implements Serializable {
     private Integer status;
     private String message;
     private String path;
+    private String method;
 }

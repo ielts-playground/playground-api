@@ -6,6 +6,7 @@ import org.ielts.playground.common.constant.RequestConstants;
 import org.ielts.playground.model.request.TestCreationRequest;
 import org.ielts.playground.model.response.TestCreationResponse;
 import org.ielts.playground.service.TestService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +24,7 @@ public class TestController {
     @PutMapping(PathConstants.API_TEST_CREATION_URL)
     public TestCreationResponse create(
             @RequestPart(name = RequestConstants.AUDIO, required = false) final MultipartFile audio,
-            @RequestPart(RequestConstants.CONTENT) final TestCreationRequest content) {
+            @Validated @RequestPart(RequestConstants.CONTENT) final TestCreationRequest content) {
         content.setAudio(audio);
         return this.service.create(content);
     }

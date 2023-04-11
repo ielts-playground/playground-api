@@ -4,5 +4,7 @@ CREATE TABLE IF NOT EXISTS test_audio (
     name VARCHAR(1024) NOT NULL,
     type VARCHAR(1024) NOT NULL,
     data LONGBLOB NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT NOW(),
+    modified_at DATETIME NOT NULL DEFAULT NOW(),
     PRIMARY KEY (id)
 );

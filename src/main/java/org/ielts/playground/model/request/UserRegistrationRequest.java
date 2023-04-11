@@ -16,9 +16,8 @@ public class UserRegistrationRequest {
     private String email;
 
     @NotNull
-
     private String firstName;
-    @NotNull
 
+    @NotNull
     private String lastName;
 }

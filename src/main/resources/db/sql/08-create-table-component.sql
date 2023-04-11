@@ -7,5 +7,7 @@ CREATE TABLE IF NOT EXISTS component (
     value LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
     size VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
     options TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+    created_at DATETIME NOT NULL DEFAULT NOW(),
+    modified_at DATETIME NOT NULL DEFAULT NOW(),
     PRIMARY KEY (id)
 );
