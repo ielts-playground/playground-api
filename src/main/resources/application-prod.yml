@@ -1,4 +1,8 @@
 server:
+  async:
+    core-pool-size: 20
+    max-pool-size: 100
+    queue-capacity: 50
   security:
     authentication:
       whitelist:

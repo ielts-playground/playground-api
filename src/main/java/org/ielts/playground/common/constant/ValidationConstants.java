@@ -8,4 +8,5 @@ public final class ValidationConstants {
     public static final String PART_TYPE_INVALID = "part type invalid";
     public static final String AUDIO_MISSING = "audio missing";
     public static final String AUDIO_NOT_FOUND = "audio not found";
+    public static final String EXAM_PART_NOT_FOUND = "exam part not found";
 }

@@ -6,6 +6,6 @@ CREATE TABLE IF NOT EXISTS component (
     kei VARCHAR(255),
     value LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
     size VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-    options VARCHAR(2048) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+    options TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
     PRIMARY KEY (id)
 );
