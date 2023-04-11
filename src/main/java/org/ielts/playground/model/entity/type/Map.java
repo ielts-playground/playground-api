@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class Map extends Text {
     private final java.util.Map<String, String> internal;
@@ -32,6 +33,13 @@ public class Map extends Text {
      */
     public String get(String key) {
         return this.internal.get(key);
+    }
+
+    /**
+     * Retrieves the key set of the map.
+     */
+    public Set<String> keys() {
+        return this.internal.keySet();
     }
 
     @SuppressWarnings("java:S2225")

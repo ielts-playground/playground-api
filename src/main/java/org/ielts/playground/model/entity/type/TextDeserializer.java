@@ -30,8 +30,10 @@ public final class TextDeserializer {
                 // ignore
             }
         }
-        if (value instanceof java.util.Map) {
-            return new Map(java.util.Map.class.cast(value));
+        try {
+            return new Map(mapper.convertValue(value, java.util.Map.class));
+        } catch (IllegalArgumentException ex) {
+            // ignore
         }
         return new Raw(value.toString());
     }

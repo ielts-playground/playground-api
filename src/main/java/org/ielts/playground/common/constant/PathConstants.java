@@ -25,6 +25,8 @@ public final class PathConstants {
     public static final String API_POSTS_UPLOAD_URL = API_POSTS_BASE_URL + "/upload";
     public static final String API_POSTS_GENERATE_URL = API_POSTS_BASE_URL + "/generate";
 
+    public static final String API_GET_TEST_READING_SKILL = API_BASE_URL + "/random/reading";
+
     public static final String API_USERS_BASE_URL = API_BASE_URL + "/users";
     public static final String API_USERS_INFO_URL = API_USERS_BASE_URL + "";
 

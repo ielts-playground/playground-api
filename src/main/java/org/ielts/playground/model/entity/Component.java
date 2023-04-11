@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,9 @@ public class Component extends BaseEntity {
 
     @Column(name = "part_id")
     private Long partId;
+
+    @Transient
+    private Long partNumber;
 
     @Column(name = "position")
     private String position;
