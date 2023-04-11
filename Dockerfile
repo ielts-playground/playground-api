@@ -11,4 +11,4 @@ ARG DEPENDENCY=/ielts-playground/playground-api/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","org.ielts.playground.App"]
+ENTRYPOINT ["java", "-Xmx1g", "-cp", "app:app/lib/*", "org.ielts.playground.App"]

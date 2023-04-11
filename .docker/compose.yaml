@@ -4,6 +4,10 @@ services:
     build:
       context: ..
     image: ielts-playground/playground-api:1.0
+    cpus: 1.0
+    mem_limit: 2048m
+    mem_reservation: 128m
+    restart: always
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
       - SWAGGER_BASE_URL=${SWAGGER_BASE_URL}
@@ -24,6 +28,7 @@ services:
   internal-redis:
     container_name: ielts-playground-api--redis
     image: redis:7.0.10-alpine
+    restart: always
     networks:
       - ielts-playground
 

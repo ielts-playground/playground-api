@@ -40,7 +40,8 @@ logging:
 spring:
   servlet:
     multipart:
-      max-file-size: 100MB
+      max-file-size: 500MB
+      max-request-size: 500MB
   cache:
     type: redis
   redis:
@@ -65,7 +66,7 @@ spring:
           batch_size: 10
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?useUnicode=true&characterEncoding=UTF-8&maxAllowedPacket=1073741824
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
   liquibase:
