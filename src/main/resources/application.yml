@@ -43,6 +43,9 @@ logging:
     org.ielts.playground: DEBUG
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 300MB
   cache:
     type: redis
   redis:
