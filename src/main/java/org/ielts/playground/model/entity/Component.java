@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,4 +52,14 @@ public class Component extends BaseEntity {
 
     @Column(name = "options")
     private Map options;
+
+    @Transient
+    private Long partNumber;
+
+    public static Component includePartNumber(
+            @NotNull Component component,
+            Long partNumber) {
+        component.setPartNumber(partNumber);
+        return component;
+    }
 }

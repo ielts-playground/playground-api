@@ -5,6 +5,9 @@ import org.ielts.playground.common.enumeration.ComponentType;
 import org.ielts.playground.common.enumeration.PartType;
 import org.ielts.playground.common.exception.BadRequestException;
 import org.ielts.playground.common.exception.InternalServerException;
+import org.ielts.playground.common.exception.NotFoundException;
+import org.ielts.playground.model.dto.ComponentWithPartNumber;
+import org.ielts.playground.model.dto.TestWithRate;
 import org.ielts.playground.model.entity.Component;
 import org.ielts.playground.model.entity.Part;
 import org.ielts.playground.model.entity.PartAnswer;
@@ -12,6 +15,7 @@ import org.ielts.playground.model.entity.Test;
 import org.ielts.playground.model.entity.TestAudio;
 import org.ielts.playground.model.request.TestCreationRequest;
 import org.ielts.playground.model.response.TestCreationResponse;
+import org.ielts.playground.repository.ComponentRepository;
 import org.ielts.playground.repository.ComponentWriteRepository;
 import org.ielts.playground.repository.PartAnswerRepository;
 import org.ielts.playground.repository.PartRepository;
@@ -27,11 +31,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
@@ -40,6 +46,7 @@ import javax.validation.constraints.NotNull;
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
     private final PartRepository partRepository;
+    private final ComponentRepository componentRepository;
     private final ComponentWriteRepository componentWriteRepository;
     private final PartAnswerRepository partAnswerRepository;
     private final TestAudioRepository testAudioRepository;
@@ -49,12 +56,13 @@ public class TestServiceImpl implements TestService {
     public TestServiceImpl(
             TestRepository testRepository,
             PartRepository partRepository,
-            ComponentWriteRepository componentWriteRepository,
+            ComponentRepository componentRepository, ComponentWriteRepository componentWriteRepository,
             PartAnswerRepository partAnswerRepository,
             TestAudioRepository testAudioRepository,
             ModelMapper modelMapper, SecurityUtils securityUtils) {
         this.testRepository = testRepository;
         this.partRepository = partRepository;
+        this.componentRepository = componentRepository;
         this.componentWriteRepository = componentWriteRepository;
         this.partAnswerRepository = partAnswerRepository;
         this.testAudioRepository = testAudioRepository;
@@ -139,12 +147,12 @@ public class TestServiceImpl implements TestService {
             @NotNull final List<TestCreationRequest.PartAnswer> partAnswers) {
         try {
             final List<PartAnswer> answers = partAnswers.stream()
-                .map(partAnswer -> PartAnswer.builder()
-                        .partId(partIds.get(partAnswer.getPart()))
-                        .kei(partAnswer.getKei())
-                        .value(partAnswer.getValue())
-                        .build())
-                .collect(Collectors.toList());
+                    .map(partAnswer -> PartAnswer.builder()
+                            .partId(partIds.get(partAnswer.getPart()))
+                            .kei(partAnswer.getKei())
+                            .value(partAnswer.getValue())
+                            .build())
+                    .collect(Collectors.toList());
             if (!answers.isEmpty()) {
                 this.partAnswerRepository.saveAll(answers);
             }
@@ -170,5 +178,37 @@ public class TestServiceImpl implements TestService {
         } catch (Exception ex) {
             throw new InternalServerException(ex.getMessage(), ex);
         }
+    }
+
+    @Override
+    public void join(Long examId, PartType partType) {
+        final Long testId = this.randomTestIdFor(partType);
+        final List<ComponentWithPartNumber> answerSelectableQuestions = this.componentRepository
+                    .findAllAnswerSelectableQuestionsByTestId(testId);
+        final List<ComponentWithPartNumber> otherComponents = this.componentRepository
+                    .findAllByTestId(testId, Collections.singletonList(ComponentType.QUESTION));
+        System.out.println(testId);
+    }
+
+    /**
+     * Retrieves a test that has been added currently.
+     *
+     * @param partType the parts' skill.
+     * @return the test's id.
+     * @throws NotFoundException if there's no test found.
+     */
+    private Long randomTestIdFor(@NotNull PartType partType) {
+        final List<TestWithRate> testRates = this.testRepository.getTestWithRateInXDays(60L, partType);
+        if (testRates.isEmpty()) {
+            throw new NotFoundException(ValidationConstants.TEST_NOT_FOUND);
+        }
+
+        double rand = ThreadLocalRandom.current().nextDouble();
+        for (TestWithRate testRate : testRates) {
+            if (rand < testRate.getRate()) {
+                return testRate.getId();
+            }
+        }
+        return testRates.get(ThreadLocalRandom.current().nextInt(testRates.size())).getId();
     }
 }
