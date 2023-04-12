@@ -18,7 +18,7 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USERNAME=${MYSQL_USERNAME}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - REDIS_HOST=localhost
+      - REDIS_HOST=internal-redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=
     ports:
@@ -29,8 +29,6 @@ services:
     container_name: ielts-playground-api--redis
     image: redis:7.0.10-alpine
     restart: always
-    expose:
-      - 6379
     networks:
       - ielts-playground
 
