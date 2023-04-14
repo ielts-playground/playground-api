@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.ielts.playground.common.enumeration.ComponentType;
+import org.ielts.playground.model.entity.type.Map;
 import org.ielts.playground.model.entity.type.Text;
 
 @Data
@@ -47,5 +48,5 @@ public class Component extends BaseEntity {
     private Text size;
 
     @Column(name = "options")
-    private Text options;
+    private Map options;
 }

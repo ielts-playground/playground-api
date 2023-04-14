@@ -4,6 +4,17 @@ server:
     max-pool-size: 100
     queue-capacity: 50
   security:
+    cors:
+      headers:
+        - "*"
+      methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      origins:
+        - *
     authentication:
       whitelist:
         - /public/**
