@@ -9,8 +9,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Raw extends Text {
+public class Raw extends Text implements Numerable {
     private String value;
+
+    @Override
+    public String raw() {
+        return this.value;
+    }
 
     @Override
     public String toString() {

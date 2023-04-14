@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Map;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,15 +15,13 @@ import java.util.Map;
 public class Range extends Text {
     private Long from;
     private Long to;
+    private Range and;
 
     @SuppressWarnings("java:S2225")
     @Override
     public String toString() {
         try {
-            return new ObjectMapper().writeValueAsString(Map.of(
-                    "from", this.from,
-                    "to", this.to
-            ));
+            return new ObjectMapper().writeValueAsString(this);
         } catch (JsonProcessingException ex) {
             return null;
         }

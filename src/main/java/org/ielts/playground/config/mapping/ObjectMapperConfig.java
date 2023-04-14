@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import org.ielts.playground.model.entity.type.Map;
 import org.ielts.playground.model.entity.type.Range;
+import org.ielts.playground.model.entity.type.Raw;
 import org.ielts.playground.model.entity.type.Size;
 import org.ielts.playground.model.entity.type.Text;
 import org.ielts.playground.model.entity.type.TextDeserializer;
@@ -62,6 +63,7 @@ public class ObjectMapperConfig {
             module.addDeserializer(Range.class, new TextJsonDeserializer<>());
             module.addDeserializer(Size.class, new TextJsonDeserializer<>());
             module.addDeserializer(Map.class, new TextJsonDeserializer<>());
+            module.addDeserializer(Raw.class, new TextJsonDeserializer<>());
             module.addDeserializer(Text.class, new TextJsonDeserializer<>());
             this.mapper.registerModule(module);
             return this;
