@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ielts.playground.model.entity.type.Map;
 import org.ielts.playground.model.entity.type.Text;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +39,7 @@ public class TestCreationRequest {
         private String kei;
         private Text value;
         private Text size;
-        private Text options;
+        private Map options;
     }
 
     @Data
