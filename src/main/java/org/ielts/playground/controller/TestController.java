@@ -12,9 +12,11 @@ import org.ielts.playground.service.TestService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.util.annotation.Nullable;
 
 import java.util.Map;
 
@@ -35,9 +37,9 @@ public class TestController {
         return this.service.create(content);
     }
 
-    @PermitAll // local testing
     @GetMapping(PathConstants.API_GET_TEST_READING_SKILL)
-    public DisplayAllDataResponse retrieveRandomReadingExam(){
-        return this.service.retrieveRandomReadingExam();
+    public DisplayAllDataResponse retrieveRandomReadingExam(
+            @Nullable @RequestParam(name = "id", required = false) Long examId){
+        return this.service.retrieveRandomReadingExam(examId);
     }
 }

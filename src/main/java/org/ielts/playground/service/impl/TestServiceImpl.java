@@ -9,8 +9,11 @@ import org.ielts.playground.common.enumeration.ComponentType;
 import org.ielts.playground.common.enumeration.PartType;
 import org.ielts.playground.common.exception.BadRequestException;
 import org.ielts.playground.common.exception.InternalServerException;
+import org.ielts.playground.common.exception.NotFoundException;
 import org.ielts.playground.model.dto.ComponentWithPartNumber;
 import org.ielts.playground.model.entity.Component;
+import org.ielts.playground.model.entity.Exam;
+import org.ielts.playground.model.entity.ExamPart;
 import org.ielts.playground.model.entity.Part;
 import org.ielts.playground.model.entity.PartAnswer;
 import org.ielts.playground.model.entity.Test;
@@ -25,6 +28,8 @@ import org.ielts.playground.model.response.OptionResponse;
 import org.ielts.playground.model.response.TestCreationResponse;
 import org.ielts.playground.repository.ComponentRepository;
 import org.ielts.playground.repository.ComponentWriteRepository;
+import org.ielts.playground.repository.ExamPartRepository;
+import org.ielts.playground.repository.ExamRepository;
 import org.ielts.playground.repository.PartAnswerRepository;
 import org.ielts.playground.repository.PartRepository;
 import org.ielts.playground.repository.TestAudioRepository;
@@ -57,10 +62,11 @@ public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
     private final PartRepository partRepository;
     private final ComponentWriteRepository componentWriteRepository;
-
     private final ComponentRepository componentRepository;
     private final PartAnswerRepository partAnswerRepository;
     private final TestAudioRepository testAudioRepository;
+    private final ExamRepository examRepository;
+    private final ExamPartRepository examPartRepository;
     private final ModelMapper modelMapper;
     private final SecurityUtils securityUtils;
 
@@ -70,13 +76,15 @@ public class TestServiceImpl implements TestService {
             ComponentWriteRepository componentWriteRepository,
             ComponentRepository componentRepository, PartAnswerRepository partAnswerRepository,
             TestAudioRepository testAudioRepository,
-            ModelMapper modelMapper, SecurityUtils securityUtils) {
+            ExamRepository examRepository, ExamPartRepository examPartRepository, ModelMapper modelMapper, SecurityUtils securityUtils) {
         this.testRepository = testRepository;
         this.partRepository = partRepository;
         this.componentWriteRepository = componentWriteRepository;
         this.componentRepository = componentRepository;
         this.partAnswerRepository = partAnswerRepository;
         this.testAudioRepository = testAudioRepository;
+        this.examRepository = examRepository;
+        this.examPartRepository = examPartRepository;
         this.modelMapper = modelMapper;
         this.securityUtils = securityUtils;
     }
@@ -242,19 +250,48 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public DisplayAllDataResponse retrieveRandomReadingExam() {
+    public DisplayAllDataResponse retrieveRandomReadingExam(Long examId) {
+        final Long userId = this.securityUtils.getLoggedUserId();
+        if (Objects.nonNull(examId)) { // kiểm tra xem user có quyền tham gia bài thi này không
+            Exam exam = this.examRepository.findById(examId).orElse(null);
+            if (Objects.isNull(exam)) {
+                throw new NotFoundException(ValidationConstants.EXAM_NOT_FOUND);
+            }
+            if (!Objects.equals(userId, exam.getUserId())) {
+                throw new BadRequestException(ValidationConstants.CANNOT_JOIN_EXAM);
+            }
+        } else {
+            // TODO: kiểm tra xem còn bài thi nào user chưa hoàn thành (submitted) không?
+            // TODO: nếu có và bài thi đó chưa hết hạn (cho một giới hạn là mấy tiếng đồng hồ chẳng hạn) thì không cho tạo bài thi mới
+            Exam exam = Exam.builder()
+                    .userId(userId)
+                    .build();
+            examId = this.examRepository.save(exam).getId();
+        }
+
         DisplayAllDataResponse displayAllDataResponse = new DisplayAllDataResponse();
+        displayAllDataResponse.setExamId(examId);
         List<Long> testIds = testRepository.allActiveReadingTestIds();
         Random rand = new Random();
         Long testId = testIds.get(rand.nextInt(testIds.size()));
         List<ComponentWithPartNumber> testComponents = componentRepository.findByTestId(testId);
 
+        final Set<Long> partIds = new HashSet<>();
         final Map<Long, List<Component>> partComponents = new HashMap<>();
         for (ComponentWithPartNumber component : testComponents) {
             Long partNumber = component.getPartNumber();
             List<Component> components = partComponents
                     .computeIfAbsent(partNumber, k -> new ArrayList<>());
+            partIds.add(component.getComponent().getPartId());
             components.add(component.getComponent());
+        }
+
+        {
+            final Long id = examId; // change to final variable
+            this.examPartRepository.saveAll(partIds.stream().map(partId -> ExamPart.builder()
+                    .examId(id)
+                    .partId(partId)
+                    .build()).collect(Collectors.toList()));
         }
 
         Map<String, Set<String>> listTypeQuestionInPart = new HashMap<>();
