@@ -23,7 +23,7 @@ public class Range extends Text {
     public static final Range NONE;
 
     static {
-        NONE = new Range(0L, 0L);
+        NONE = new Range(0L, 0L, null);
     }
 
     @SuppressWarnings("java:S2225")

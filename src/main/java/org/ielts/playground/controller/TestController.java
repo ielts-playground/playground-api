@@ -5,7 +5,8 @@ import org.ielts.playground.common.annotation.RequireAdmin;
 import org.ielts.playground.common.constant.PathConstants;
 import org.ielts.playground.common.constant.RequestConstants;
 import org.ielts.playground.model.request.TestCreationRequest;
-import org.ielts.playground.model.response.DisplayData;
+import org.ielts.playground.model.response.DisplayAllDataResponse;
+import org.ielts.playground.model.response.DisplayQuestionDataResponse;
 import org.ielts.playground.model.response.TestCreationResponse;
 import org.ielts.playground.service.TestService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public class TestController {
 
     @PermitAll // local testing
     @GetMapping(PathConstants.API_GET_TEST_READING_SKILL)
-    public Map<Long, DisplayData> retrieveRandomReadingExam(){
+    public DisplayAllDataResponse retrieveRandomReadingExam(){
         return this.service.retrieveRandomReadingExam();
     }
 }

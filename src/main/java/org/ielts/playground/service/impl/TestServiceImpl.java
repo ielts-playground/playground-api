@@ -9,6 +9,7 @@ import org.ielts.playground.common.enumeration.ComponentType;
 import org.ielts.playground.common.enumeration.PartType;
 import org.ielts.playground.common.exception.BadRequestException;
 import org.ielts.playground.common.exception.InternalServerException;
+import org.ielts.playground.model.dto.ComponentWithPartNumber;
 import org.ielts.playground.model.entity.Component;
 import org.ielts.playground.model.entity.Part;
 import org.ielts.playground.model.entity.PartAnswer;
@@ -18,7 +19,8 @@ import org.ielts.playground.model.entity.type.Range;
 import org.ielts.playground.model.entity.type.Raw;
 import org.ielts.playground.model.request.TestCreationRequest;
 import org.ielts.playground.model.response.ComponentDataResponse;
-import org.ielts.playground.model.response.DisplayData;
+import org.ielts.playground.model.response.DisplayAllDataResponse;
+import org.ielts.playground.model.response.DisplayQuestionDataResponse;
 import org.ielts.playground.model.response.OptionResponse;
 import org.ielts.playground.model.response.TestCreationResponse;
 import org.ielts.playground.repository.ComponentRepository;
@@ -38,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -47,6 +50,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 import java.util.Random;
+import java.util.stream.Stream;
 
 @Service
 public class TestServiceImpl implements TestService {
@@ -214,7 +218,7 @@ public class TestServiceImpl implements TestService {
             if (this.hasQuestion && this.hasOptions) {
                 return ClientComponentType.CHOOSE_ANSWER;
             }
-            if (this.hasBox) {
+            if (this.hasQuestion || this.hasBox) {
                 return ClientComponentType.ANSWER_PARAGRAPH;
             }
             return ClientComponentType.UNKNOWN;
@@ -231,22 +235,31 @@ public class TestServiceImpl implements TestService {
         private List<Component> components;
     }
 
+    @Getter
+    @Setter
+    static class ClosureLong {
+        private long value;
+    }
+
     @Override
-    public Map<Long, DisplayData> retrieveRandomReadingExam() {
+    public DisplayAllDataResponse retrieveRandomReadingExam() {
+        DisplayAllDataResponse displayAllDataResponse = new DisplayAllDataResponse();
         List<Long> testIds = testRepository.allActiveReadingTestIds();
         Random rand = new Random();
         Long testId = testIds.get(rand.nextInt(testIds.size()));
-        List<Component> testComponents = componentRepository.findByTestId(testId);
+        List<ComponentWithPartNumber> testComponents = componentRepository.findByTestId(testId);
 
         final Map<Long, List<Component>> partComponents = new HashMap<>();
-        for (Component component : testComponents) {
+        for (ComponentWithPartNumber component : testComponents) {
             Long partNumber = component.getPartNumber();
             List<Component> components = partComponents
                     .computeIfAbsent(partNumber, k -> new ArrayList<>());
-            components.add(component);
+            components.add(component.getComponent());
         }
 
-        final Map<Long, DisplayData> displayDataMap = new HashMap<>();
+        Map<String, Set<String>> listTypeQuestionInPart = new HashMap<>();
+
+        final Map<Long, DisplayQuestionDataResponse> displayDataMap = new HashMap<>();
         for (Map.Entry<Long, List<Component>> entry : partComponents.entrySet()) {
             Long partNumber = entry.getKey();
 
@@ -258,12 +271,11 @@ public class TestServiceImpl implements TestService {
                     .components(new ArrayList<>())
                     .build();
             componentRanges.add(currentComponentRange);
-
             List<Component> components = entry.getValue();
             for (Component component : components) {
                 if (ComponentType.RANGE.equals(component.getType())) {
                     currentComponentRange = ComponentRange.builder()
-                            .position(ComponentPosition.valueOf(component.getPosition()))
+                            .position(ComponentPosition.of(component.getPosition()))
                             .componentTypeBuilder(new ClientComponentTypeBuilder())
                             .range((Range) component.getValue())
                             .components(new ArrayList<>())
@@ -284,6 +296,10 @@ public class TestServiceImpl implements TestService {
 
             List<ComponentDataResponse> rightContent = new ArrayList<>();
             List<ComponentDataResponse> leftContent = new ArrayList<>();
+            final ClosureLong subId = new ClosureLong();
+            subId.setValue(1);
+            Set<String> listTypeQuestion = new HashSet<>();
+
             for (ComponentRange componentRange : componentRanges) {
                 if (componentRange.getComponents().isEmpty()) {
                     continue;
@@ -296,17 +312,106 @@ public class TestServiceImpl implements TestService {
                             .filter(component -> ComponentType.QUESTION.equals(component.getType()))
                             .map(this::processChooseAnswerComponent)
                             .peek(componentDataResponse -> componentDataResponse.setPart(partNumber))
+                            .peek(componentDataResponse -> componentDataResponse.setSubId(subId.getValue()))
                             .collect(Collectors.toList()));
+                    listTypeQuestion.add(ClientComponentType.CHOOSE_ANSWER.getValue());
                 } else if (ClientComponentType.ANSWER_PARAGRAPH.equals(componentType)) {
-                    componentDataResponses.addAll(componentRange.getComponents().stream()
+                    List<Component> convertedComponents /* danh sách các components sau khi chuyển đổi thằng QUESTION về TEXT */ = componentRange.getComponents().stream()
+                            .flatMap(component -> {
+                                if (ComponentType.QUESTION.equals(component.getType()) && Objects.isNull(component.getOptions())) {
+                                    Component textComponent = new Component();
+                                    String text = String.format("**%s** %s", component.getKei(), component.getValue().toString());
+                                    textComponent.setPartId(component.getPartId());
+                                    textComponent.setType(ComponentType.TEXT);
+                                    textComponent.setValue(new Raw(text));
+                                    Component boxComponent = new Component();
+                                    boxComponent.setPartId(component.getPartId());
+                                    boxComponent.setType(ComponentType.BOX);
+                                    boxComponent.setKei(component.getKei());
+                                    return Stream.of(textComponent, boxComponent); // thêm ô trống ở sau
+                                }
+                                return Stream.of(component);
+                            })
+                            .collect(Collectors.toList());
+                    convertedComponents.add(Component.builder()
+                            .type(ComponentType.TEXT)
+                            .value(new Raw(""))
+                            .build());
+
+                    List<Component> mergedComponents = new ArrayList<>();
+                    Component current = null;
+                    for (int i = 0; i < convertedComponents.size() - 1; i++) {
+                        if (Objects.isNull(current)) {
+                            current = convertedComponents.get(i);
+                            mergedComponents.add(current);
+                        }
+                        Component next = convertedComponents.get(i + 1);
+                        if (ComponentType.TEXT.equals(next.getType())) { // nếu thằng tiếp theo là TEXT thì gộp chuỗi lại
+                            current.setValue(new Raw(
+                                    String.format("%s %s", current.getValue().toString(), next.getValue().toString())
+                            ));
+                        } else if (ComponentType.BOX.equals(next.getType())) { // nếu thằng tiếp theo là BOX thì gán id
+                            if (Objects.isNull(current)) { // trường hợp hai BOX đứng cạnh nhau
+                                current = Component.builder()
+                                        .type(ComponentType.TEXT)
+                                        .value(new Raw(""))
+                                        .build();
+                                mergedComponents.add(current);
+                            }
+                            current.setKei(next.getKei());
+                            current = null;
+                            i++;
+                        } else if (ComponentType.TITLE.equals(next.getType())) {
+                            current.setValue(new Raw(
+                                    String.format("%s\n**%s**\n", current.getValue().toString(), next.getValue().toString())
+                            ));
+                        } else if (ComponentType.IMAGE.equals(next.getType())) {
+                            current.setValue(new Raw(
+                                    String.format("%s\n![%s](%s)\n", current.getValue().toString(), next.getKei(), next.getValue().toString())
+                            ));
+                        }
+                    }
+
+                    componentDataResponses.addAll(mergedComponents.stream()
                             .map(this::processAnswerParagraphComponent)
                             .peek(componentDataResponse -> componentDataResponse.setPart(partNumber))
+                            .peek(componentDataResponse -> componentDataResponse.setSubId(subId.getValue()))
                             .collect(Collectors.toList()));
+                    listTypeQuestion.add(ClientComponentType.ANSWER_PARAGRAPH.getValue());
+
                 } else {
-                    componentDataResponses.addAll(componentRange.getComponents().stream()
+                    List<Component> convertedComponents = componentRange.getComponents();
+                    convertedComponents.add(Component.builder()
+                            .type(ComponentType.TEXT)
+                            .value(new Raw(""))
+                            .build());
+
+                    List<Component> mergedComponents = new ArrayList<>();
+                    Component current = convertedComponents.get(0);
+                    mergedComponents.add(current);
+                    for (int i = 0; i < convertedComponents.size() - 1; i++) {
+                        Component next = convertedComponents.get(i + 1);
+                        if (ComponentType.TEXT.equals(next.getType())) { // nếu thằng tiếp theo là TEXT thì gộp chuỗi lại
+                            current.setValue(new Raw(
+                                    String.format("%s %s", current.getValue().toString(), next.getValue().toString())
+                            ));
+                        } else if (ComponentType.TITLE.equals(next.getType())) {
+                            current.setValue(new Raw(
+                                    String.format("%s\n**%s**\n", current.getValue().toString(), next.getValue().toString())
+                            ));
+                        } else if (ComponentType.IMAGE.equals(next.getType())) {
+                            current.setValue(new Raw(
+                                    String.format("%s\n![%s](%s)\n", current.getValue().toString(), next.getKei(), next.getValue().toString())
+                            ));
+                        }
+                    }
+
+                    componentDataResponses.addAll(mergedComponents.stream()
                             .map(this::processUnknownComponent)
                             .peek(componentDataResponse -> componentDataResponse.setPart(partNumber))
+                            .peek(componentDataResponse -> componentDataResponse.setSubId(subId.getValue()))
                             .collect(Collectors.toList()));
+                    listTypeQuestion.add(ClientComponentType.UNKNOWN.getValue());
                 }
 
                 if (ComponentPosition.LEFT.equals(position)) {
@@ -314,20 +419,35 @@ public class TestServiceImpl implements TestService {
                 } else {
                     rightContent.addAll(componentDataResponses);
                 }
+                subId.setValue(subId.getValue() + 1); // tăng subId cho range tiếp theo
             }
+            listTypeQuestionInPart.put("part"+partNumber, listTypeQuestion );
 
-            DisplayData displayData = new DisplayData();
+            DisplayQuestionDataResponse displayData = new DisplayQuestionDataResponse();
             displayData.setLeftContent(leftContent);
             displayData.setRightContent(rightContent);
             displayDataMap.put(partNumber, displayData);
+
         }
-        return displayDataMap;
+        displayAllDataResponse.setListTypeQuestion(listTypeQuestionInPart);
+        displayAllDataResponse.setDisplayQuestionDataResponse(displayDataMap);
+        return displayAllDataResponse;
     }
 
     private ComponentDataResponse processChooseAnswerComponent(@NotNull Component component) {
         final ComponentDataResponse response = new ComponentDataResponse();
-        response.setId(Long.valueOf(component.getKei()));
-        response.setSubId(Long.valueOf(component.getKei()));
+        try {
+            if (Objects.isNull(component.getSize())) {
+                response.setId(Long.valueOf(component.getKei()));
+            } else { // dạng nhiều câu hỏi gộp lại, chọn nhiều đáp án
+                String[] ids = component.getKei().split("-");
+                Long from = Long.valueOf(ids[0]);
+                Long to = Long.valueOf(ids[1]);
+                // TODO: tách thành các câu hỏi theo yêu cầu của Front-end
+            }
+        } catch (NumberFormatException ex) {
+            // bỏ qua
+        }
         response.setType(ClientComponentType.CHOOSE_ANSWER.getValue());
         response.setNumberOrder(null);
         response.setQuestionTitle(((Raw) component.getValue()).getValue());
@@ -346,13 +466,26 @@ public class TestServiceImpl implements TestService {
 
     private ComponentDataResponse processAnswerParagraphComponent(@NotNull Component component) {
         final ComponentDataResponse response = new ComponentDataResponse();
-        // TODO: ...
+        try {
+            response.setId(Long.valueOf(component.getKei()));
+        } catch (NumberFormatException ex) {
+            // bỏ qua
+        }
+        response.setType(ClientComponentType.ANSWER_PARAGRAPH.getValue());
+        response.setNumberOrder(null);
+        response.setQuestionTitle(null);
+        response.setLastText("");
+        response.setIsDownLine(Boolean.FALSE);
+        response.setText(component.getValue().toString());
         return response;
     }
 
     private ComponentDataResponse processUnknownComponent(@NotNull Component component) {
         final ComponentDataResponse response = new ComponentDataResponse();
-        // TODO: ...
+        response.setType(ClientComponentType.UNKNOWN.getValue());
+        response.setLastText("");
+        response.setIsDownLine(Boolean.FALSE);
+        response.setText(component.getValue().toString());
         return response;
     }
 }

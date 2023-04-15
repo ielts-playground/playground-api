@@ -16,8 +16,8 @@ public enum ComponentPosition {
         return this.value;
     }
 
-    public static ComponentType of(String value) {
-        return Arrays.stream(ComponentType.values())
+    public static ComponentPosition of(String value) {
+        return Arrays.stream(ComponentPosition.values())
                 .filter(componentType -> componentType.getValue().equals(value))
                 .findAny()
                 .orElse(null);

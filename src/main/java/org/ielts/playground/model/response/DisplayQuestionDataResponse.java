@@ -4,15 +4,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DisplayData {
+public class DisplayQuestionDataResponse {
 
     private List<ComponentDataResponse> leftContent;
     private List<ComponentDataResponse> rightContent;
-    private Map<String, List<String>> listTypeQuestion;
 
 }

@@ -1,7 +1,8 @@
 package org.ielts.playground.service;
 
 import org.ielts.playground.model.request.TestCreationRequest;
-import org.ielts.playground.model.response.DisplayData;
+import org.ielts.playground.model.response.DisplayAllDataResponse;
+import org.ielts.playground.model.response.DisplayQuestionDataResponse;
 import org.ielts.playground.model.response.TestCreationResponse;
 import java.util.Map;
 
@@ -14,5 +15,5 @@ public interface TestService {
      * @param request the part's information.
      */
     TestCreationResponse create(@NotNull TestCreationRequest request);
-    Map<Long, DisplayData> retrieveRandomReadingExam();
+    DisplayAllDataResponse retrieveRandomReadingExam();
 }
