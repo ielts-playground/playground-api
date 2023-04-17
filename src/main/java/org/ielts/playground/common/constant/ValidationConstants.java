@@ -11,6 +11,6 @@ public final class ValidationConstants {
     public static final String AUDIO_MISSING = "audio missing";
     public static final String AUDIO_NOT_FOUND = "audio not found";
     public static final String EXAM_NOT_FOUND = "exam not found";
-    public static final String EXAM_PART_NOT_FOUND = "exam part not found";
-    public static final String EXAM_PART_ALREADY_ANSWERED = "exam part already answered";
+    public static final String EXAM_TEST_NOT_FOUND = "exam test not found";
+    public static final String EXAM_TEST_ALREADY_ANSWERED = "exam test already answered";
 }

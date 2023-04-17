@@ -14,6 +14,8 @@ import java.util.Set;
 public class DisplayAllDataResponse {
     @JsonProperty("id")
     private Long examId;
+    @JsonProperty("submitId")
+    private Long examTestId;
     @JsonProperty("resourceId")
     private Long testId;
     private Map<Long, DisplayQuestionDataResponse> displayQuestionDataResponse;

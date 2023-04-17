@@ -1,0 +1,2 @@
+ALTER TABLE exam_answer
+ADD COLUMN exam_test_id BIGINT NOT NULL DEFAULT -1;

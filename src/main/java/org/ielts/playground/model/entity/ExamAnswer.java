@@ -29,6 +29,9 @@ public class ExamAnswer extends BaseEntity {
     @Column(name = "exam_part_id")
     private Long examPartId;
 
+    @Column(name = "exam_test_id")
+    private Long examTestId;
+
     @Column(name = "kei")
     private String kei;
 
