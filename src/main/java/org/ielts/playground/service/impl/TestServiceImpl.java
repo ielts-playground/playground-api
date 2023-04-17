@@ -250,7 +250,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public DisplayAllDataResponse retrieveRandomReadingExam(Long examId) {
+    public DisplayAllDataResponse retrieveRandomExamBySkill(Long examId, PartType type) {
         final Long userId = this.securityUtils.getLoggedUserId();
         if (Objects.nonNull(examId)) { // kiểm tra xem user có quyền tham gia bài thi này không
             Exam exam = this.examRepository.findById(examId).orElse(null);
@@ -271,7 +271,7 @@ public class TestServiceImpl implements TestService {
 
         DisplayAllDataResponse displayAllDataResponse = new DisplayAllDataResponse();
         displayAllDataResponse.setExamId(examId);
-        List<Long> testIds = testRepository.allActiveReadingTestIds();
+        List<Long> testIds = testRepository.allActiveTestIds(type.getValue());
         Random rand = new Random();
         Long testId = testIds.get(rand.nextInt(testIds.size()));
         List<ComponentWithPartNumber> testComponents = componentRepository.findByTestId(testId);

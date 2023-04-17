@@ -16,8 +16,8 @@ public interface TestRepository extends CrudRepository<Test, Long> {
 
     @Query(value = " SELECT t.id FROM Part p join Test t on t.id = p.testId " +
             " where t.active = true" +
-            " and p.type = :#{T(org.ielts.playground.common.enumeration.PartType).READING} ")
-    List<Long> allActiveReadingTestIds();
+            " and p.type = :skill ")
+    List<Long> allActiveTestIds(@Param("skill") String skill);
 
     @Query(value = " SELECT p.id FROM Part p where p.testId = :testId")
     List<Long> getAllPartIdByTestId(@Param("testId") Long testId);
