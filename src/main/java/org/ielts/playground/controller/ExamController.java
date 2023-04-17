@@ -21,7 +21,7 @@ public class ExamController {
     public void submit(
             @PathVariable Long id,
             @Validated @RequestBody ExamSubmissionRequest request) {
-        request.setExamPartId(id);
+        request.setExamTestId(id);
         this.service.submit(request);
     }
 }

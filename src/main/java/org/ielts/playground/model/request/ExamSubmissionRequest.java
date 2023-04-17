@@ -13,7 +13,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 public class ExamSubmissionRequest {
-    private Long examPartId;
+    private Long examTestId;
 
     @NotNull
     private Map<String, String> answers;

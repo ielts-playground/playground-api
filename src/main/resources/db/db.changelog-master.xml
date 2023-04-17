@@ -119,4 +119,21 @@
                 path="sql/14-create-table-exam-answer.sql"
         />
     </changeSet>
+    <changeSet id="15-create-table-exam-test" author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/15-create-table-exam-test.sql"
+        />
+    </changeSet>
+    <changeSet id="16-add-column-exam-test-id-to-table-exam-answer" author="Huyns">
+        <preConditions>
+            <not>
+                <columnExists tableName="exam_answer" columnName="exam_test_id"/>
+            </not>
+        </preConditions>
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/16-add-column-exam-test-id-to-table-exam-answer.sql"
+        />
+    </changeSet>
 </databaseChangeLog>

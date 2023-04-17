@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "exam_part")
-public class ExamPart extends BaseEntity {
+@Table(name = "exam_test")
+public class ExamTest extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -29,6 +29,6 @@ public class ExamPart extends BaseEntity {
     @Column(name = "exam_id")
     private Long examId;
 
-    @Column(name = "part_id")
-    private Long partId;
+    @Column(name = "test_id")
+    private Long testId;
 }

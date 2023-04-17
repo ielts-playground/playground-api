@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS exam_test (
+    exam_id BIGINT NOT NULL,
+    test_id BIGINT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT NOW(),
+    modified_at DATETIME NOT NULL DEFAULT NOW()
+);

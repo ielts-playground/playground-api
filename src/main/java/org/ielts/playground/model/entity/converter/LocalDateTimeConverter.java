@@ -7,6 +7,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.util.Optional;
 
 @Converter(autoApply = true)
 public class LocalDateTimeConverter implements AttributeConverter<LocalDateTime, String> {
@@ -14,11 +15,15 @@ public class LocalDateTimeConverter implements AttributeConverter<LocalDateTime,
 
     @Override
     public String convertToDatabaseColumn(LocalDateTime dateTime) {
-        return FORMATTER.print(dateTime);
+        return Optional.ofNullable(dateTime)
+                .map(FORMATTER::print)
+                .orElse(null);
     }
 
     @Override
     public LocalDateTime convertToEntityAttribute(String text) {
-        return LocalDateTime.parse(text, FORMATTER);
+        return Optional.ofNullable(text)
+                .map(t -> LocalDateTime.parse(t, FORMATTER))
+                .orElse(null);
     }
 }
