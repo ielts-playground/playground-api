@@ -1,5 +1,6 @@
 package org.ielts.playground.repository;
 
+import org.ielts.playground.common.enumeration.PartType;
 import org.ielts.playground.model.entity.Test;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +18,7 @@ public interface TestRepository extends CrudRepository<Test, Long> {
     @Query(value = " SELECT t.id FROM Part p join Test t on t.id = p.testId " +
             " where t.active = true" +
             " and p.type = :skill ")
-    List<Long> allActiveTestIds(@Param("skill") String skill);
+    List<Long> allActiveTestIds(@Param("skill") PartType skill);
 
     @Query(value = " SELECT p.id FROM Part p where p.testId = :testId")
     List<Long> getAllPartIdByTestId(@Param("testId") Long testId);

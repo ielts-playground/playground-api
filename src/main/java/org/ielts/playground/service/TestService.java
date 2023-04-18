@@ -17,4 +17,6 @@ public interface TestService {
     TestCreationResponse create(@NotNull TestCreationRequest request);
     DisplayAllDataResponse retrieveRandomExamBySkill(@Nullable Long examId, PartType skill);
 
+    Long checkAnswer(Long examId);
+
 }

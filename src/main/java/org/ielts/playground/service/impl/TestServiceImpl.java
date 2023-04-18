@@ -271,7 +271,7 @@ public class TestServiceImpl implements TestService {
 
         DisplayAllDataResponse displayAllDataResponse = new DisplayAllDataResponse();
         displayAllDataResponse.setExamId(examId);
-        List<Long> testIds = testRepository.allActiveTestIds(type.getValue());
+        List<Long> testIds = testRepository.allActiveTestIds(type);
         Random rand = new Random();
         Long testId = testIds.get(rand.nextInt(testIds.size()));
         List<ComponentWithPartNumber> testComponents = componentRepository.findByTestId(testId);
@@ -466,6 +466,13 @@ public class TestServiceImpl implements TestService {
         displayAllDataResponse.setListTypeQuestion(listTypeQuestionInPart);
         displayAllDataResponse.setDisplayQuestionDataResponse(displayDataMap);
         return displayAllDataResponse;
+    }
+
+    @Override
+    public Long checkAnswer(Long examId) {
+
+
+        return null;
     }
 
     private ComponentDataResponse processChooseAnswerComponent(@NotNull Component component) {
