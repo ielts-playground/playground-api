@@ -51,4 +51,11 @@ public class TestController {
             @Nullable @RequestParam(name = "id", required = false)Long examId){
         return this.service.retrieveRandomExamBySkill(examId, PartType.WRITING);
     }
+
+    @GetMapping(PathConstants.API_CHECK_ANSWER)
+    public Long checkAnswer(@RequestParam(name = "examId")Long examId){
+        return this.service.checkAnswer(examId);
+    }
+
+
 }

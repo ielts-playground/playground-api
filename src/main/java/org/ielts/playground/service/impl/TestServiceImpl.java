@@ -1,5 +1,7 @@
 package org.ielts.playground.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +13,7 @@ import org.ielts.playground.common.exception.BadRequestException;
 import org.ielts.playground.common.exception.InternalServerException;
 import org.ielts.playground.common.exception.NotFoundException;
 import org.ielts.playground.model.dto.ComponentWithPartNumber;
+import org.ielts.playground.model.dto.UserAnswerAndTrueAnswerDto;
 import org.ielts.playground.model.entity.Component;
 import org.ielts.playground.model.entity.Exam;
 import org.ielts.playground.model.entity.ExamTest;
@@ -51,8 +54,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.persistence.Tuple;
 import javax.validation.constraints.NotNull;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -69,6 +75,12 @@ public class TestServiceImpl implements TestService {
     private final ExamTestRepository examTestRepository;
     private final ModelMapper modelMapper;
     private final SecurityUtils securityUtils;
+
+    private static final Pattern MULTI_QUESTION_PATTERN;
+
+    static {
+        MULTI_QUESTION_PATTERN = Pattern.compile("\\d+\\S\\d+");
+    }
 
     public TestServiceImpl(
             TestRepository testRepository,
@@ -271,7 +283,7 @@ public class TestServiceImpl implements TestService {
 
         DisplayAllDataResponse displayAllDataResponse = new DisplayAllDataResponse();
         displayAllDataResponse.setExamId(examId);
-        List<Long> testIds = testRepository.allActiveTestIds(type.getValue());
+        List<Long> testIds = testRepository.allActiveTestIds(type);
         Random rand = new Random();
         Long testId = testIds.get(rand.nextInt(testIds.size()));
         List<ComponentWithPartNumber> testComponents = componentRepository.findByTestId(testId);
@@ -330,8 +342,8 @@ public class TestServiceImpl implements TestService {
 
             List<ComponentDataResponse> rightContent = new ArrayList<>();
             List<ComponentDataResponse> leftContent = new ArrayList<>();
-            final ClosureLong subId = new ClosureLong();
-            subId.setValue(1);
+            final ClosureLong numberOrder = new ClosureLong();
+            numberOrder.setValue(1);
             Set<String> listTypeQuestion = new HashSet<>();
 
             for (ComponentRange componentRange : componentRanges) {
@@ -344,9 +356,9 @@ public class TestServiceImpl implements TestService {
                 if (ClientComponentType.CHOOSE_ANSWER.equals(componentType)) {
                     componentDataResponses.addAll(componentRange.getComponents().stream()
                             .filter(component -> ComponentType.QUESTION.equals(component.getType()))
-                            .map(this::processChooseAnswerComponent)
+                            .flatMap(this::processChooseAnswerComponent)
                             .peek(componentDataResponse -> componentDataResponse.setPart(partNumber))
-                            .peek(componentDataResponse -> componentDataResponse.setSubId(subId.getValue()))
+                            .peek(componentDataResponse -> componentDataResponse.setNumberOrder(numberOrder.getValue()))
                             .collect(Collectors.toList()));
                     listTypeQuestion.add(ClientComponentType.CHOOSE_ANSWER.getValue());
                 } else if (ClientComponentType.ANSWER_PARAGRAPH.equals(componentType)) {
@@ -409,7 +421,7 @@ public class TestServiceImpl implements TestService {
                     componentDataResponses.addAll(mergedComponents.stream()
                             .map(this::processAnswerParagraphComponent)
                             .peek(componentDataResponse -> componentDataResponse.setPart(partNumber))
-                            .peek(componentDataResponse -> componentDataResponse.setSubId(subId.getValue()))
+                            .peek(componentDataResponse -> componentDataResponse.setNumberOrder(numberOrder.getValue()))
                             .collect(Collectors.toList()));
                     listTypeQuestion.add(ClientComponentType.ANSWER_PARAGRAPH.getValue());
 
@@ -443,7 +455,7 @@ public class TestServiceImpl implements TestService {
                     componentDataResponses.addAll(mergedComponents.stream()
                             .map(this::processUnknownComponent)
                             .peek(componentDataResponse -> componentDataResponse.setPart(partNumber))
-                            .peek(componentDataResponse -> componentDataResponse.setSubId(subId.getValue()))
+                            .peek(componentDataResponse -> componentDataResponse.setNumberOrder(numberOrder.getValue()))
                             .collect(Collectors.toList()));
                     listTypeQuestion.add(ClientComponentType.UNKNOWN.getValue());
                 }
@@ -453,7 +465,7 @@ public class TestServiceImpl implements TestService {
                 } else {
                     rightContent.addAll(componentDataResponses);
                 }
-                subId.setValue(subId.getValue() + 1); // tăng subId cho range tiếp theo
+                numberOrder.setValue(numberOrder.getValue() + 1); // tăng numberId cho range tiếp theo
             }
             listTypeQuestionInPart.put("part"+partNumber, listTypeQuestion );
 
@@ -468,34 +480,81 @@ public class TestServiceImpl implements TestService {
         return displayAllDataResponse;
     }
 
-    private ComponentDataResponse processChooseAnswerComponent(@NotNull Component component) {
-        final ComponentDataResponse response = new ComponentDataResponse();
+    @Override
+    public Long checkAnswer(Long examId) {
+
+        List<Tuple> userAnsAndTrueAns = testRepository.getUserAnswerAndTrueAnswer(examId);
+        List<UserAnswerAndTrueAnswerDto> userAnswerAndTrueAnswers = userAnsAndTrueAns.stream()
+                .map(t -> new UserAnswerAndTrueAnswerDto(
+                        t.get(0, String.class),
+                        t.get(1, String.class),
+                        t.get(2, String.class)
+                )).collect(Collectors.toList());
+        Long correctAnswer = 0L;
+        for (UserAnswerAndTrueAnswerDto item : userAnswerAndTrueAnswers) {
+            final String kei = item.getQuestion();
+            if (Objects.isNull(kei)) {
+                continue; // bỏ qua câu hỏi có kei là null
+            }
+//            final Matcher match = MULTI_QUESTION_PATTERN.matcher(kei);
+//            if (match.matches()) { // kiểm tra xem câu hỏi có phải dạng câu chọn nhiều đáp án không
+            if (kei.contains("-")) {
+                // TODO: tách đáp án thành dạng mảng
+                try {
+                    Set<String> trueAnswers = Set.of(new ObjectMapper().readValue(item.getTrueAnswer(), String[].class));
+                    Set<String> userAnswers = Set.of(new ObjectMapper().readValue(item.getUserAnswer(), String[].class));
+                    for (String answer : userAnswers) {
+                        if (trueAnswers.contains(answer)) {
+                            correctAnswer++;
+                        }
+                    }
+                } catch (JsonProcessingException ex) {
+                    //
+                }
+            } else if(item.getTrueAnswer().equalsIgnoreCase(item.getUserAnswer())){
+                correctAnswer++;
+            }
+        }
+        return correctAnswer;
+    }
+
+    private Stream<ComponentDataResponse> processChooseAnswerComponent(@NotNull Component component) {
+        long from = 0L;
+        long to = 0L;
+
+        final List<Long> questionIds = new ArrayList<>();
         try {
             if (Objects.isNull(component.getSize())) {
-                response.setId(Long.valueOf(component.getKei()));
+                from = Long.valueOf(component.getKei());
+                to = from;
             } else { // dạng nhiều câu hỏi gộp lại, chọn nhiều đáp án
                 String[] ids = component.getKei().split("-");
-                Long from = Long.valueOf(ids[0]);
-                Long to = Long.valueOf(ids[1]);
-                // TODO: tách thành các câu hỏi theo yêu cầu của Front-end
+                from = Long.valueOf(ids[0]);
+                to = Long.valueOf(ids[1]);
             }
         } catch (NumberFormatException ex) {
             // bỏ qua
         }
-        response.setType(ClientComponentType.CHOOSE_ANSWER.getValue());
-        response.setNumberOrder(null);
-        response.setQuestionTitle(((Raw) component.getValue()).getValue());
-        final List<OptionResponse> options = new ArrayList<>();
-        final Set<String> keys = component.getOptions().keys();
-        for (String key : keys) {
-            String value = component.getOptions().get(key);
-            OptionResponse option = new OptionResponse();
-            option.setTitle(value);
-            option.setValue(key);
-            options.add(option);
+        final List<ComponentDataResponse> questions = new ArrayList<>();
+        for (long questionId = from; questionId < to; questionId++) {
+            final ComponentDataResponse question = new ComponentDataResponse();
+            question.setType(ClientComponentType.CHOOSE_ANSWER.getValue());
+            question.setNumberOrder(null);
+            question.setQuestionTitle(((Raw) component.getValue()).getValue());
+            final List<OptionResponse> options = new ArrayList<>();
+            final Set<String> keys = component.getOptions().keys();
+            for (String key : keys) {
+                String value = component.getOptions().get(key);
+                OptionResponse option = new OptionResponse();
+                option.setTitle(value);
+                option.setValue(key);
+                options.add(option);
+            }
+            question.setSubId(from); // subId là id của câu hỏi đầu tiên
+            question.setOptions(options);
+            questions.add(question);
         }
-        response.setOptions(options);
-        return response;
+        return questions.stream();
     }
 
     private ComponentDataResponse processAnswerParagraphComponent(@NotNull Component component) {
