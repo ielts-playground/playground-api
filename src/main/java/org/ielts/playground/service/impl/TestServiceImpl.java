@@ -418,11 +418,21 @@ public class TestServiceImpl implements TestService {
                         }
                     }
 
-                    componentDataResponses.addAll(mergedComponents.stream()
+                    List<ComponentDataResponse> tempResponses = mergedComponents.stream()
                             .map(this::processAnswerParagraphComponent)
                             .peek(componentDataResponse -> componentDataResponse.setPart(partNumber))
                             .peek(componentDataResponse -> componentDataResponse.setNumberOrder(numberOrder.getValue()))
-                            .collect(Collectors.toList()));
+                            .collect(Collectors.toList());
+
+                    if (!tempResponses.isEmpty()) {
+                        ComponentDataResponse lastComponent = tempResponses.get(tempResponses.size() - 1);
+                        if (Objects.isNull(lastComponent.getId())) {
+                            tempResponses.forEach(comp -> comp.setLastText(lastComponent.getText()));
+                            tempResponses.remove(lastComponent);
+                        }
+                    }
+
+                    componentDataResponses.addAll(tempResponses);
                     listTypeQuestion.add(ClientComponentType.ANSWER_PARAGRAPH.getValue());
 
                 } else {
@@ -536,7 +546,7 @@ public class TestServiceImpl implements TestService {
             // bỏ qua
         }
         final List<ComponentDataResponse> questions = new ArrayList<>();
-        for (long questionId = from; questionId < to; questionId++) {
+        for (long questionId = from; questionId <= to; questionId++) {
             final ComponentDataResponse question = new ComponentDataResponse();
             question.setId(questionId);
             question.setType(ClientComponentType.CHOOSE_ANSWER.getValue());
