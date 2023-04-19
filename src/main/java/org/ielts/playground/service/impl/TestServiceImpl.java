@@ -538,6 +538,7 @@ public class TestServiceImpl implements TestService {
         final List<ComponentDataResponse> questions = new ArrayList<>();
         for (long questionId = from; questionId < to; questionId++) {
             final ComponentDataResponse question = new ComponentDataResponse();
+            question.setId(questionId);
             question.setType(ClientComponentType.CHOOSE_ANSWER.getValue());
             question.setNumberOrder(null);
             question.setQuestionTitle(((Raw) component.getValue()).getValue());
@@ -560,13 +561,13 @@ public class TestServiceImpl implements TestService {
     private ComponentDataResponse processAnswerParagraphComponent(@NotNull Component component) {
         final ComponentDataResponse response = new ComponentDataResponse();
         try {
-            response.setId(Long.valueOf(component.getKei()));
+            long questionId = Long.valueOf(component.getKei());
+            response.setId(questionId);
+            response.setSubId(questionId);
         } catch (NumberFormatException ex) {
             // bỏ qua
         }
         response.setType(ClientComponentType.ANSWER_PARAGRAPH.getValue());
-        response.setNumberOrder(null);
-        response.setQuestionTitle(null);
         response.setLastText("");
         response.setIsDownLine(Boolean.FALSE);
         response.setText(component.getValue().toString());
