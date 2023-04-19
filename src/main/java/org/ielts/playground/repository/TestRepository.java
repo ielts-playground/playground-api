@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+import javax.persistence.Tuple;
 import java.util.List;
 
 public interface TestRepository extends CrudRepository<Test, Long> {
@@ -22,5 +23,14 @@ public interface TestRepository extends CrudRepository<Test, Long> {
 
     @Query(value = " SELECT p.id FROM Part p where p.testId = :testId")
     List<Long> getAllPartIdByTestId(@Param("testId") Long testId);
+
+    @Query(value = " select pa.kei, pa.value as true_answer, ea.value as user_answer " +
+            "    from Exam e " +
+            "   join ExamTest et on e.id = et.examId " +
+            "   join Part p on et.testId = p.testId " +
+            "   join PartAnswer pa on p.id = pa.partId " +
+            "   join ExamAnswer ea on et.id = ea.examTestId " +
+            "   where et.examId = :examId")
+    List<Tuple> getUserAnswerAndTrueAnswer(@Param("examId") Long examId);
 
 }
