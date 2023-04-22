@@ -307,7 +307,7 @@ public class TestServiceImpl implements TestService {
                 .build()).getId();
         displayAllDataResponse.setExamTestId(examTestId);
 
-        Map<String, Set<String>> listTypeQuestionInPart = new HashMap<>();
+        Map<String, List<String>> listTypeQuestionInPart = new HashMap<>();
 
         final Map<Long, DisplayQuestionDataResponse> displayDataMap = new HashMap<>();
         for (Map.Entry<Long, List<Component>> entry : partComponents.entrySet()) {
@@ -348,7 +348,7 @@ public class TestServiceImpl implements TestService {
             List<ComponentDataResponse> leftContent = new ArrayList<>();
             final ClosureLong numberOrder = new ClosureLong();
             numberOrder.setValue(1);
-            Set<String> listTypeQuestion = new HashSet<>();
+            List<String> listTypeQuestion = new ArrayList<>();
 
             for (ComponentRange componentRange : componentRanges) {
                 if (componentRange.getComponents().isEmpty()) {
