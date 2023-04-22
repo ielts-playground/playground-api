@@ -284,6 +284,10 @@ public class TestServiceImpl implements TestService {
         DisplayAllDataResponse displayAllDataResponse = new DisplayAllDataResponse();
         displayAllDataResponse.setExamId(examId);
         List<Long> testIds = testRepository.allActiveTestIds(type);
+        if (testIds.isEmpty()) {
+            throw new NotFoundException(ValidationConstants.TEST_NOT_FOUND);
+        }
+
         Random rand = new Random();
         Long testId = testIds.get(rand.nextInt(testIds.size()));
         List<ComponentWithPartNumber> testComponents = componentRepository.findByTestId(testId);
