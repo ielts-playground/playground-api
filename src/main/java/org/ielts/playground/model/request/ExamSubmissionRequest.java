@@ -1,5 +1,6 @@
 package org.ielts.playground.model.request;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 public class ExamSubmissionRequest {
+    @JsonAlias("submitId")
     private Long examTestId;
 
     @NotNull
