@@ -76,12 +76,6 @@ public class TestServiceImpl implements TestService {
     private final ModelMapper modelMapper;
     private final SecurityUtils securityUtils;
 
-    private static final Pattern MULTI_QUESTION_PATTERN;
-
-    static {
-        MULTI_QUESTION_PATTERN = Pattern.compile("\\d+\\S\\d+");
-    }
-
     public TestServiceImpl(
             TestRepository testRepository,
             PartRepository partRepository,
@@ -213,6 +207,7 @@ public class TestServiceImpl implements TestService {
 
     private enum ClientComponentType {
         CHOOSE_ANSWER("choose-answer"),
+        CHOOSE_TWO_ANSWER("choose-two-answer"),
         ANSWER_PARAGRAPH("answer-paragraph"),
         UNKNOWN("unknown"),
         ;
@@ -257,8 +252,12 @@ public class TestServiceImpl implements TestService {
 
     @Getter
     @Setter
-    static class ClosureLong {
-        private long value;
+    static class ClosureValue<T> {
+        private T value;
+
+        public ClosureValue(T initial) {
+            this.value = initial;
+        }
     }
 
     @Override
@@ -346,9 +345,12 @@ public class TestServiceImpl implements TestService {
 
             List<ComponentDataResponse> rightContent = new ArrayList<>();
             List<ComponentDataResponse> leftContent = new ArrayList<>();
-            final ClosureLong numberOrder = new ClosureLong();
-            numberOrder.setValue(1);
+            final ClosureValue<Long> numberOrder = new ClosureValue<>(1L);
             List<String> listTypeQuestion = new ArrayList<>();
+
+            final String clientComponentTypeSuffix = PartType.LISTENING.equals(type)
+                    ? "-listening"
+                    : "";
 
             for (ComponentRange componentRange : componentRanges) {
                 if (componentRange.getComponents().isEmpty()) {
@@ -358,13 +360,17 @@ public class TestServiceImpl implements TestService {
                 ClientComponentType componentType = componentRange.getComponentTypeBuilder().build();
                 List<ComponentDataResponse> componentDataResponses = new ArrayList<>();
                 if (ClientComponentType.CHOOSE_ANSWER.equals(componentType)) {
+                    final ClosureValue<String> clientComponentType = new ClosureValue<>(null);
                     componentDataResponses.addAll(componentRange.getComponents().stream()
                             .filter(component -> ComponentType.QUESTION.equals(component.getType()))
                             .flatMap(this::processChooseAnswerComponent)
                             .peek(componentDataResponse -> componentDataResponse.setPart(partNumber))
                             .peek(componentDataResponse -> componentDataResponse.setNumberOrder(numberOrder.getValue()))
+                            .peek(componentDataResponse -> componentDataResponse.setType(
+                                    componentDataResponse.getType() + clientComponentTypeSuffix))
+                            .peek(componentDataResponse -> clientComponentType.setValue(componentDataResponse.getType()))
                             .collect(Collectors.toList()));
-                    listTypeQuestion.add(ClientComponentType.CHOOSE_ANSWER.getValue());
+                    listTypeQuestion.add(clientComponentType.getValue());
                 } else if (ClientComponentType.ANSWER_PARAGRAPH.equals(componentType)) {
                     List<Component> convertedComponents /* danh sách các components sau khi chuyển đổi thằng QUESTION về TEXT */ = componentRange.getComponents().stream()
                             .flatMap(component -> {
@@ -426,6 +432,8 @@ public class TestServiceImpl implements TestService {
                             .map(this::processAnswerParagraphComponent)
                             .peek(componentDataResponse -> componentDataResponse.setPart(partNumber))
                             .peek(componentDataResponse -> componentDataResponse.setNumberOrder(numberOrder.getValue()))
+                            .peek(componentDataResponse -> componentDataResponse.setType(
+                                    componentDataResponse.getType() + clientComponentTypeSuffix))
                             .collect(Collectors.toList());
 
                     if (!tempResponses.isEmpty()) {
@@ -437,7 +445,7 @@ public class TestServiceImpl implements TestService {
                     }
 
                     componentDataResponses.addAll(tempResponses);
-                    listTypeQuestion.add(ClientComponentType.ANSWER_PARAGRAPH.getValue());
+                    listTypeQuestion.add(ClientComponentType.ANSWER_PARAGRAPH.getValue() + clientComponentTypeSuffix);
 
                 } else {
                     List<Component> convertedComponents = componentRange.getComponents();
@@ -470,8 +478,10 @@ public class TestServiceImpl implements TestService {
                             .map(this::processUnknownComponent)
                             .peek(componentDataResponse -> componentDataResponse.setPart(partNumber))
                             .peek(componentDataResponse -> componentDataResponse.setNumberOrder(numberOrder.getValue()))
+                            .peek(componentDataResponse -> componentDataResponse.setType(
+                                    componentDataResponse.getType() + clientComponentTypeSuffix))
                             .collect(Collectors.toList()));
-                    listTypeQuestion.add(ClientComponentType.UNKNOWN.getValue());
+                    listTypeQuestion.add(ClientComponentType.UNKNOWN.getValue() + clientComponentTypeSuffix);
                 }
 
                 if (ComponentPosition.LEFT.equals(position)) {
@@ -536,7 +546,6 @@ public class TestServiceImpl implements TestService {
         long from = 0L;
         long to = 0L;
 
-        final List<Long> questionIds = new ArrayList<>();
         try {
             if (Objects.isNull(component.getSize())) {
                 from = Long.valueOf(component.getKei());
@@ -549,11 +558,14 @@ public class TestServiceImpl implements TestService {
         } catch (NumberFormatException ex) {
             // bỏ qua
         }
+        ClientComponentType clientComponentType = from == to
+                ? ClientComponentType.CHOOSE_ANSWER
+                : ClientComponentType.CHOOSE_TWO_ANSWER;
         final List<ComponentDataResponse> questions = new ArrayList<>();
         for (long questionId = from; questionId <= to; questionId++) {
             final ComponentDataResponse question = new ComponentDataResponse();
             question.setId(questionId);
-            question.setType(ClientComponentType.CHOOSE_ANSWER.getValue());
+            question.setType(clientComponentType.getValue());
             question.setNumberOrder(null);
             question.setQuestionTitle(((Raw) component.getValue()).getValue());
             final List<OptionResponse> options = new ArrayList<>();
