@@ -17,15 +17,15 @@ import java.util.List;
 
 @Service
 public class ExamServiceImpl implements ExamService {
-    private final ExamServiceImpl self;
+    // private final ExamServiceImpl self;
     private final ExamTestRepository examTestRepository;
     private final ExamAnswerRepository examAnswerRepository;
 
     public ExamServiceImpl(
-            @Lazy ExamServiceImpl self,
+            // @Lazy ExamServiceImpl self,
             ExamTestRepository examTestRepository,
             ExamAnswerRepository examAnswerRepository) {
-        this.self = self;
+        // this.self = self;
         this.examTestRepository = examTestRepository;
         this.examAnswerRepository = examAnswerRepository;
     }
@@ -49,7 +49,8 @@ public class ExamServiceImpl implements ExamService {
                     .value(value)
                     .build());
         });
-        this.self.saveAnswersAsync(examAnswers);
+        // this.self.saveAnswersAsync(examAnswers);
+        this.saveAnswers(examAnswers);
     }
 
     /**
@@ -59,6 +60,10 @@ public class ExamServiceImpl implements ExamService {
      */
     @Async
     public void saveAnswersAsync(final List<ExamAnswer> examAnswers) {
+        this.examAnswerRepository.saveAll(examAnswers);
+    }
+
+    public void saveAnswers(final List<ExamAnswer> examAnswers) {
         this.examAnswerRepository.saveAll(examAnswers);
     }
 }
