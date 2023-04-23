@@ -24,21 +24,22 @@ public interface TestRepository extends CrudRepository<Test, Long> {
     @Query(value = " SELECT p.id FROM Part p where p.testId = :testId")
     List<Long> getAllPartIdByTestId(@Param("testId") Long testId);
 
-    @Query(value = " select aaa.question, aaa.trueAnswer, bbb.userAnswer " +
+    @Query(value = " select aaa.question, aaa.trueAnswer, bbb.userAnswer, aaa.skill " +
             " from (select pa.kei   as question, " +
             "              pa.value as trueAnswer, " +
-            "              null     as userAnswer " +
+            "              p.type  as skill " +
             "      from part_answer pa " +
             "      left join part p on pa.part_id = p.id " +
             "      left join test t on p.test_id = t.id " +
             "      left join exam_test et on t.id = et.test_id " +
-            "      where et.exam_id = :examId) as aaa " +
+            "      where et.exam_id = :examId and p.type in :skills) as aaa " +
             " left join (select ea.kei   as question, " +
-            "                   null     as trueAnswer, " +
             "                   ea.value as userAnswer " +
             "           from exam_answer ea " +
             "           left join exam_test et on ea.exam_test_id = et.id " +
             "           where et.exam_id = :examId ) as bbb on aaa.question = bbb.question", nativeQuery = true)
-    List<Tuple> getUserAnswerAndTrueAnswer(@Param("examId") Long examId);
+    List<Tuple> getUserAnswerAndTrueAnswer(
+            @Param("skills") List<String> skills,
+            @Param("examId") Long examId);
 
 }

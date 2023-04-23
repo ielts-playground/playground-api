@@ -7,6 +7,7 @@ import org.ielts.playground.model.response.TestCreationResponse;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
+import java.util.Map;
 
 public interface TestService {
     /**
@@ -17,6 +18,6 @@ public interface TestService {
     TestCreationResponse create(@NotNull TestCreationRequest request);
     DisplayAllDataResponse retrieveRandomExamBySkill(@Nullable Long examId, PartType skill);
 
-    Long checkAnswer(Long examId);
+    Map<String, Long> checkAnswer(Long examId);
 
 }

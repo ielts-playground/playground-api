@@ -47,6 +47,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -505,41 +506,45 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public Long checkAnswer(Long examId) {
-
-        List<Tuple> userAnsAndTrueAns = testRepository.getUserAnswerAndTrueAnswer(examId);
+    public Map<String, Long> checkAnswer(Long examId) {
+        List<String> skills = Arrays.asList(
+                PartType.READING.getValue(),
+                PartType.LISTENING.getValue());
+        List<Tuple> userAnsAndTrueAns = testRepository.getUserAnswerAndTrueAnswer(skills, examId);
         List<UserAnswerAndTrueAnswerDto> userAnswerAndTrueAnswers = userAnsAndTrueAns.stream()
                 .map(t -> new UserAnswerAndTrueAnswerDto(
                         t.get(0, String.class),
                         t.get(1, String.class),
-                        t.get(2, String.class)
+                        t.get(2, String.class),
+                        t.get(3, String.class)
                 )).collect(Collectors.toList());
-        Long correctAnswer = 0L;
+        Map<String, Long> correctAnswersForSkill = new HashMap<>();
         for (UserAnswerAndTrueAnswerDto item : userAnswerAndTrueAnswers) {
+            String skill = item.getSkill();
+            Long correctAnswers = correctAnswersForSkill.computeIfAbsent(skill, k -> 0L);
             final String kei = item.getQuestion();
             if (Objects.isNull(kei)) {
                 continue; // bỏ qua câu hỏi có kei là null
             }
-//            final Matcher match = MULTI_QUESTION_PATTERN.matcher(kei);
-//            if (match.matches()) { // kiểm tra xem câu hỏi có phải dạng câu chọn nhiều đáp án không
-            if (kei.contains("-")) {
+            if (kei.contains("-")) { // kiểm tra xem câu hỏi có phải dạng câu chọn nhiều đáp án không
                 // TODO: tách đáp án thành dạng mảng
                 try {
                     Set<String> trueAnswers = Set.of(new ObjectMapper().readValue(item.getTrueAnswer(), String[].class));
                     Set<String> userAnswers = Set.of(new ObjectMapper().readValue(item.getUserAnswer(), String[].class));
                     for (String answer : userAnswers) {
                         if (trueAnswers.contains(answer)) {
-                            correctAnswer++;
+                            correctAnswers++;
                         }
                     }
                 } catch (JsonProcessingException ex) {
                     //
                 }
             } else if(item.getTrueAnswer().equalsIgnoreCase(item.getUserAnswer())){
-                correctAnswer++;
+                correctAnswers++;
             }
+            correctAnswersForSkill.put(skill, correctAnswers);
         }
-        return correctAnswer;
+        return correctAnswersForSkill;
     }
 
     private Stream<ComponentDataResponse> processChooseAnswerComponent(@NotNull Component component) {
