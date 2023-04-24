@@ -377,7 +377,7 @@ public class TestServiceImpl implements TestService {
                             .flatMap(component -> {
                                 if (ComponentType.QUESTION.equals(component.getType()) && Objects.isNull(component.getOptions())) {
                                     Component textComponent = new Component();
-                                    String text = String.format("**%s** %s", component.getKei(), component.getValue().toString());
+                                    String text = String.format("**%s** %s", component.getKei(), replaceAllBreakLines(component.getValue().toString()));
                                     textComponent.setPartId(component.getPartId());
                                     textComponent.setType(ComponentType.TEXT);
                                     textComponent.setValue(new Raw(text));
@@ -420,11 +420,11 @@ public class TestServiceImpl implements TestService {
                             i++;
                         } else if (ComponentType.TITLE.equals(next.getType())) {
                             current.setValue(new Raw(
-                                    String.format("%s\n**%s**\n", current.getValue().toString(), next.getValue().toString())
+                                    String.format("%s\n\n**%s**\n\n", current.getValue().toString(), next.getValue().toString())
                             ));
                         } else if (ComponentType.IMAGE.equals(next.getType())) {
                             current.setValue(new Raw(
-                                    String.format("%s\n![%s](%s)\n", current.getValue().toString(), next.getKei(), next.getValue().toString())
+                                    String.format("%s\n\n![%s](%s)\n\n", current.getValue().toString(), next.getKei(), next.getValue().toString())
                             ));
                         }
                     }
@@ -613,7 +613,11 @@ public class TestServiceImpl implements TestService {
         response.setType(ClientComponentType.UNKNOWN.getValue());
         response.setLastText("");
         response.setIsDownLine(Boolean.FALSE);
-        response.setText(component.getValue().toString());
+        response.setText(replaceAllBreakLines(component.getValue().toString()));
         return response;
+    }
+
+    private static String replaceAllBreakLines(@NotNull String text) {
+        return text.replaceAll("\n*(<br>)+\n*", "\n\n");
     }
 }
