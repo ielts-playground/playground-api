@@ -466,11 +466,11 @@ public class TestServiceImpl implements TestService {
                             ));
                         } else if (ComponentType.TITLE.equals(next.getType())) {
                             current.setValue(new Raw(
-                                    String.format("%s\n**%s**\n", current.getValue().toString(), next.getValue().toString())
+                                    String.format("%s\n\n**%s**\n\n", current.getValue().toString(), next.getValue().toString())
                             ));
                         } else if (ComponentType.IMAGE.equals(next.getType())) {
                             current.setValue(new Raw(
-                                    String.format("%s\n![%s](%s)\n", current.getValue().toString(), next.getKei(), next.getValue().toString())
+                                    String.format("%s\n\n![%s](%s)\n\n", current.getValue().toString(), next.getKei(), next.getValue().toString())
                             ));
                         }
                     }
@@ -618,6 +618,6 @@ public class TestServiceImpl implements TestService {
     }
 
     private static String replaceAllBreakLines(@NotNull String text) {
-        return text.replaceAll("\n*(<br>)+\n*", "\n\n");
+        return text.replaceAll("<br>", "\n\n");
     }
 }
