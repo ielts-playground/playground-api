@@ -519,6 +519,9 @@ public class TestServiceImpl implements TestService {
                         t.get(3, String.class)
                 )).collect(Collectors.toList());
         Map<String, Long> correctAnswersForSkill = new HashMap<>();
+        for (String skill : skills) {
+            correctAnswersForSkill.put(skill, 0L);
+        }
         for (UserAnswerAndTrueAnswerDto item : userAnswerAndTrueAnswers) {
             String skill = item.getSkill();
             Long correctAnswers = correctAnswersForSkill.computeIfAbsent(skill, k -> 0L);
