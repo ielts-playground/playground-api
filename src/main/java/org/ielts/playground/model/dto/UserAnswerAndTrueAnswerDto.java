@@ -11,4 +11,5 @@ public class UserAnswerAndTrueAnswerDto {
     private String question;
     private String trueAnswer;
     private String userAnswer;
+    private String skill;
 }

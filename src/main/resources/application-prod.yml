@@ -29,7 +29,7 @@ server:
             name: Basic Client
       jwt:
         path: /api/**
-        validity-in-seconds: 3600
+        validity-in-seconds: ${JWT_VALIDITY_IN_SECONDS}
         secret-key: ${JWT_KEY}
 
 swagger:

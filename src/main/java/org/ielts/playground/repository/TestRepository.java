@@ -24,13 +24,22 @@ public interface TestRepository extends CrudRepository<Test, Long> {
     @Query(value = " SELECT p.id FROM Part p where p.testId = :testId")
     List<Long> getAllPartIdByTestId(@Param("testId") Long testId);
 
-    @Query(value = " select pa.kei, pa.value as true_answer, ea.value as user_answer " +
-            "    from Exam e " +
-            "   join ExamTest et on e.id = et.examId " +
-            "   join Part p on et.testId = p.testId " +
-            "   join PartAnswer pa on p.id = pa.partId " +
-            "   join ExamAnswer ea on et.id = ea.examTestId " +
-            "   where et.examId = :examId")
-    List<Tuple> getUserAnswerAndTrueAnswer(@Param("examId") Long examId);
+    @Query(value = " select aaa.question, aaa.trueAnswer, bbb.userAnswer, aaa.skill " +
+            " from (select pa.kei   as question, " +
+            "              pa.value as trueAnswer, " +
+            "              p.type  as skill " +
+            "      from part_answer pa " +
+            "      left join part p on pa.part_id = p.id " +
+            "      left join test t on p.test_id = t.id " +
+            "      left join exam_test et on t.id = et.test_id " +
+            "      where et.exam_id = :examId and p.type in :skills) as aaa " +
+            " left join (select ea.kei   as question, " +
+            "                   ea.value as userAnswer " +
+            "           from exam_answer ea " +
+            "           left join exam_test et on ea.exam_test_id = et.id " +
+            "           where et.exam_id = :examId ) as bbb on aaa.question = bbb.question", nativeQuery = true)
+    List<Tuple> getUserAnswerAndTrueAnswer(
+            @Param("skills") List<String> skills,
+            @Param("examId") Long examId);
 
 }

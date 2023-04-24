@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +20,6 @@ public class DisplayAllDataResponse {
     @JsonProperty("resourceId")
     private Long testId;
     private Map<Long, DisplayQuestionDataResponse> displayQuestionDataResponse;
-    private Map<String, Set<String>> listTypeQuestion;
+    private Map<String, List<String>> listTypeQuestion;
 
 }

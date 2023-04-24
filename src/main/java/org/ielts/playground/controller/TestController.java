@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.util.annotation.Nullable;
 
+import java.util.Map;
+
 @RestController
 public class TestController {
     private final TestService service;
@@ -53,7 +55,7 @@ public class TestController {
     }
 
     @GetMapping(PathConstants.API_CHECK_ANSWER)
-    public Long checkAnswer(@RequestParam(name = "examId")Long examId){
+    public Map<String, Long> checkAnswer(@RequestParam(name = "examId")Long examId){
         return this.service.checkAnswer(examId);
     }
 
