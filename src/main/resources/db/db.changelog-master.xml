@@ -136,4 +136,15 @@
                 path="sql/16-add-column-exam-test-id-to-table-exam-answer.sql"
         />
     </changeSet>
+    <changeSet id="17-add-column-phone-number-to-table-user" author="Huyns">
+        <preConditions>
+            <not>
+                <columnExists tableName="user" columnName="phone_number"/>
+            </not>
+        </preConditions>
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/17-add-column-phone-number-to-table-user.sql"
+        />
+    </changeSet>
 </databaseChangeLog>

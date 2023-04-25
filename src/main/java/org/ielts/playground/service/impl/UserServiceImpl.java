@@ -61,6 +61,7 @@ public class UserServiceImpl implements UserService {
                 .email(userRegistration.getEmail())
                 .firstName(userRegistration.getFirstName())
                 .lastName(userRegistration.getLastName())
+                .phoneNumber(userRegistration.getPhoneNumber())
                 .roles(Collections.emptySet())
                 .build();
         this.userRepository.save(user);
