@@ -44,4 +44,5 @@ public final class PathConstants {
     public static final String API_TEST_CREATION_URL = API_BASE_URL + "/test";
     public static final String API_TEST_AUDIO_URL = API_BASE_URL + "/test/{id}/audio";
     public static final String API_EXAM_SUBMISSION_URL = API_BASE_URL + "/exam/{id}/submit";
+    public static final String API_EXAM_WRITING_TEST_RETRIEVAL_URL = API_BASE_URL + "/exam/{id}/test/writing";
 }
