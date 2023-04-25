@@ -28,6 +28,7 @@ import org.ielts.playground.model.response.ComponentDataResponse;
 import org.ielts.playground.model.response.DisplayAllDataResponse;
 import org.ielts.playground.model.response.DisplayQuestionDataResponse;
 import org.ielts.playground.model.response.OptionResponse;
+import org.ielts.playground.model.response.ResultCheckingResponse;
 import org.ielts.playground.model.response.TestCreationResponse;
 import org.ielts.playground.repository.ComponentRepository;
 import org.ielts.playground.repository.ComponentWriteRepository;
@@ -506,7 +507,9 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public Map<String, Long> checkAnswer(Long examId) {
+    public ResultCheckingResponse checkReadingAndListeningResult(Long examId) {
+        final ResultCheckingResponse response = new ResultCheckingResponse();
+        response.setExamId(examId);
         List<String> skills = Arrays.asList(
                 PartType.READING.getValue(),
                 PartType.LISTENING.getValue());
@@ -518,13 +521,13 @@ public class TestServiceImpl implements TestService {
                         t.get(2, String.class),
                         t.get(3, String.class)
                 )).collect(Collectors.toList());
-        Map<String, Long> correctAnswersForSkill = new HashMap<>();
+        Map<String, ResultCheckingResponse.Correctness> correctAnswersForSkill = new HashMap<>();
         for (String skill : skills) {
-            correctAnswersForSkill.put(skill, 0L);
+            correctAnswersForSkill.put(skill, new ResultCheckingResponse.Correctness());
         }
         for (UserAnswerAndTrueAnswerDto item : userAnswerAndTrueAnswers) {
             String skill = item.getSkill();
-            Long correctAnswers = correctAnswersForSkill.computeIfAbsent(skill, k -> 0L);
+            ResultCheckingResponse.Correctness correctAnswers = correctAnswersForSkill.get(skill);
             final String kei = item.getQuestion();
             if (Objects.isNull(kei)) {
                 continue; // bỏ qua câu hỏi có kei là null
@@ -536,18 +539,23 @@ public class TestServiceImpl implements TestService {
                     Set<String> userAnswers = Set.of(new ObjectMapper().readValue(item.getUserAnswer(), String[].class));
                     for (String answer : userAnswers) {
                         if (trueAnswers.contains(answer)) {
-                            correctAnswers++;
+                            correctAnswers.setCorrect(correctAnswers.getCorrect() + 1);
                         }
                     }
+                    correctAnswers.setTotal(correctAnswers.getTotal() + trueAnswers.size());
                 } catch (JsonProcessingException ex) {
                     //
                 }
-            } else if(item.getTrueAnswer().equalsIgnoreCase(item.getUserAnswer())){
-                correctAnswers++;
+            } else {
+                if (item.getTrueAnswer().equalsIgnoreCase(item.getUserAnswer())) {
+                    correctAnswers.setCorrect(correctAnswers.getCorrect() + 1);
+                }
+                correctAnswers.setTotal(correctAnswers.getTotal() + 1);
             }
             correctAnswersForSkill.put(skill, correctAnswers);
         }
-        return correctAnswersForSkill;
+        response.setResult(correctAnswersForSkill);
+        return response;
     }
 
     private Stream<ComponentDataResponse> processChooseAnswerComponent(@NotNull Component component) {

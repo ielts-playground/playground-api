@@ -31,8 +31,6 @@ public final class PathConstants {
 
     public static final String API_GET_TEST_WRITING_SKILL = API_BASE_URL + "/random/writing";
 
-    public static final String API_CHECK_ANSWER = API_BASE_URL + "/check/answer";
-
     public static final String API_USERS_BASE_URL = API_BASE_URL + "/users";
     public static final String API_USERS_INFO_URL = API_USERS_BASE_URL + "";
 

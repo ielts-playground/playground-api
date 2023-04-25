@@ -3,6 +3,7 @@ package org.ielts.playground.service;
 import org.ielts.playground.common.enumeration.PartType;
 import org.ielts.playground.model.request.TestCreationRequest;
 import org.ielts.playground.model.response.DisplayAllDataResponse;
+import org.ielts.playground.model.response.ResultCheckingResponse;
 import org.ielts.playground.model.response.TestCreationResponse;
 import org.springframework.lang.Nullable;
 
@@ -17,7 +18,5 @@ public interface TestService {
      */
     TestCreationResponse create(@NotNull TestCreationRequest request);
     DisplayAllDataResponse retrieveRandomExamBySkill(@Nullable Long examId, PartType skill);
-
-    Map<String, Long> checkAnswer(Long examId);
-
+    ResultCheckingResponse checkReadingAndListeningResult(@NotNull Long examId);
 }
