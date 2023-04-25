@@ -20,4 +20,7 @@ public class UserRegistrationRequest {
 
     @NotNull
     private String lastName;
+
+    @NotNull
+    private String phoneNumber;
 }

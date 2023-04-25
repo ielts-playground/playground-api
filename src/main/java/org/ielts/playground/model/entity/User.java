@@ -50,6 +50,9 @@ public class User extends BaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @Builder.Default
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
