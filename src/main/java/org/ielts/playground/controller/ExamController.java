@@ -2,7 +2,9 @@ package org.ielts.playground.controller;
 
 import org.ielts.playground.common.annotation.RequireAdmin;
 import org.ielts.playground.common.constant.PathConstants;
+import org.ielts.playground.common.enumeration.PartType;
 import org.ielts.playground.model.request.ExamSubmissionRequest;
+import org.ielts.playground.model.response.ExamAnswerRetrievalResponse;
 import org.ielts.playground.model.response.WritingTestRetrievalResponse;
 import org.ielts.playground.service.ExamService;
 import org.springframework.validation.annotation.Validated;
@@ -31,7 +33,15 @@ public class ExamController {
     @RequireAdmin
     @GetMapping(PathConstants.API_EXAM_WRITING_TEST_RETRIEVAL_URL)
     public WritingTestRetrievalResponse retrieveWritingTest(
-        @PathVariable Long id) {
+            @PathVariable Long id) {
         return this.service.retrieveWritingTest(id);
+    }
+
+    @RequireAdmin
+    @GetMapping(PathConstants.API_EXAM_ANSWER_RETRIEVAL_URL)
+    public ExamAnswerRetrievalResponse retrieveExamAnswers(
+            @PathVariable Long id,
+            @PathVariable String skill) {
+        return this.service.retrieveExamAnswer(id, PartType.of(skill));
     }
 }

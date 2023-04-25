@@ -8,17 +8,19 @@ import org.ielts.playground.model.dto.ComponentWithPartNumber;
 import org.ielts.playground.model.entity.Component;
 import org.ielts.playground.model.entity.ExamAnswer;
 import org.ielts.playground.model.request.ExamSubmissionRequest;
+import org.ielts.playground.model.response.ExamAnswerRetrievalResponse;
 import org.ielts.playground.model.response.WritingTestRetrievalResponse;
 import org.ielts.playground.repository.ComponentRepository;
 import org.ielts.playground.repository.ExamAnswerRepository;
 import org.ielts.playground.repository.ExamTestRepository;
 import org.ielts.playground.service.ExamService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,6 +85,21 @@ public class ExamServiceImpl implements ExamService {
                     })
                     .collect(Collectors.toList()));
         }
+        return response;
+    }
+
+    @Override
+    public ExamAnswerRetrievalResponse retrieveExamAnswer(Long examId, PartType partType) {
+        final ExamAnswerRetrievalResponse response = new ExamAnswerRetrievalResponse();
+        response.setExamId(examId);
+        response.setSkill(partType.getValue());
+        final List<ExamAnswer> examAnswers = this.examAnswerRepository
+                .findByExamIdAndPartType(examId, partType);
+        final Map<String, String> answers = new HashMap<>();
+        for (ExamAnswer examAnswer : examAnswers) {
+            answers.put(examAnswer.getKei(), examAnswer.getValue());
+        }
+        response.setAnswers(answers);
         return response;
     }
 
