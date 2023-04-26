@@ -4,13 +4,17 @@ import org.ielts.playground.common.annotation.RequireAdmin;
 import org.ielts.playground.common.constant.PathConstants;
 import org.ielts.playground.common.constant.RequestConstants;
 import org.ielts.playground.common.enumeration.PartType;
+import org.ielts.playground.model.dto.PointDTO;
 import org.ielts.playground.model.request.TestCreationRequest;
 import org.ielts.playground.model.response.DisplayAllDataResponse;
 import org.ielts.playground.model.response.TestCreationResponse;
 import org.ielts.playground.service.TestService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,4 +55,10 @@ public class TestController {
             @Nullable @RequestParam(name = "id", required = false)Long examId){
         return this.service.retrieveRandomExamBySkill(examId, PartType.WRITING);
     }
+
+    @PostMapping(PathConstants.API_EVALUATION_WRITING)
+    public void savePointWriting(@PathVariable Long examId, @RequestBody PointDTO pointDTO){
+         this.service.savePointWritingByExamId(examId, pointDTO);
+    }
+
 }

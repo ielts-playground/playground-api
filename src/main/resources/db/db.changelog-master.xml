@@ -147,4 +147,10 @@
                 path="sql/17-add-column-phone-number-to-table-user.sql"
         />
     </changeSet>
+    <changeSet id="18-create-table-exam-eval " author="Huyns">
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/18-create-table-exam-eval .sql"
+        />
+    </changeSet>
 </databaseChangeLog>

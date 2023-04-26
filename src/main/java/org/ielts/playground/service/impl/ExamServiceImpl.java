@@ -5,13 +5,16 @@ import org.ielts.playground.common.enumeration.PartType;
 import org.ielts.playground.common.exception.BadRequestException;
 import org.ielts.playground.common.exception.NotFoundException;
 import org.ielts.playground.model.dto.ComponentWithPartNumber;
+import org.ielts.playground.model.dto.ExamIdDTO;
 import org.ielts.playground.model.entity.Component;
 import org.ielts.playground.model.entity.ExamAnswer;
 import org.ielts.playground.model.request.ExamSubmissionRequest;
 import org.ielts.playground.model.response.ExamAnswerRetrievalResponse;
+import org.ielts.playground.model.response.ResultAllExamIdResponse;
 import org.ielts.playground.model.response.WritingTestRetrievalResponse;
 import org.ielts.playground.repository.ComponentRepository;
 import org.ielts.playground.repository.ExamAnswerRepository;
+import org.ielts.playground.repository.ExamEvalRepository;
 import org.ielts.playground.repository.ExamTestRepository;
 import org.ielts.playground.service.ExamService;
 import org.springframework.scheduling.annotation.Async;
@@ -30,15 +33,18 @@ public class ExamServiceImpl implements ExamService {
     private final ExamTestRepository examTestRepository;
     private final ExamAnswerRepository examAnswerRepository;
 
+    private final ExamEvalRepository examEvalRepository;
+
     public ExamServiceImpl(
             // @Lazy ExamServiceImpl self,
             ComponentRepository componentRepository,
             ExamTestRepository examTestRepository,
-            ExamAnswerRepository examAnswerRepository) {
+            ExamAnswerRepository examAnswerRepository, ExamEvalRepository examEvalRepository) {
         // this.self = self;
         this.componentRepository = componentRepository;
         this.examTestRepository = examTestRepository;
         this.examAnswerRepository = examAnswerRepository;
+        this.examEvalRepository = examEvalRepository;
     }
 
     @Override
@@ -101,6 +107,20 @@ public class ExamServiceImpl implements ExamService {
         }
         response.setAnswers(answers);
         return response;
+    }
+
+    @Override
+    public ResultAllExamIdResponse getAllExamNotGraded(Long page, Long size) {
+
+        List<Long> examPage = examEvalRepository.getAllExamIdNotGradedByPage(size, page * size);
+        Long allExam = examEvalRepository.getAllExamIdNotGraded();
+        ResultAllExamIdResponse resultAllExamIdResponse = ResultAllExamIdResponse.builder()
+                .examIds(examPage.stream().map(examId -> new ExamIdDTO(examId)).collect(Collectors.toList()))
+                .page(page)
+                .size(size)
+                .total(allExam)
+                .build();
+        return resultAllExamIdResponse;
     }
 
     /**
