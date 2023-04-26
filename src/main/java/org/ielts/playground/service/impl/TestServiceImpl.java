@@ -13,6 +13,7 @@ import org.ielts.playground.common.exception.BadRequestException;
 import org.ielts.playground.common.exception.InternalServerException;
 import org.ielts.playground.common.exception.NotFoundException;
 import org.ielts.playground.model.dto.ComponentWithPartNumber;
+import org.ielts.playground.model.dto.PointDTO;
 import org.ielts.playground.model.dto.UserAnswerAndTrueAnswerDto;
 import org.ielts.playground.model.entity.Component;
 import org.ielts.playground.model.entity.Exam;
@@ -32,6 +33,7 @@ import org.ielts.playground.model.response.ResultCheckingResponse;
 import org.ielts.playground.model.response.TestCreationResponse;
 import org.ielts.playground.repository.ComponentRepository;
 import org.ielts.playground.repository.ComponentWriteRepository;
+import org.ielts.playground.repository.ExamEvalRepository;
 import org.ielts.playground.repository.ExamTestRepository;
 import org.ielts.playground.repository.ExamRepository;
 import org.ielts.playground.repository.PartAnswerRepository;
@@ -50,14 +52,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.persistence.Tuple;
@@ -73,6 +72,8 @@ public class TestServiceImpl implements TestService {
     private final ComponentRepository componentRepository;
     private final PartAnswerRepository partAnswerRepository;
     private final TestAudioRepository testAudioRepository;
+
+    private final ExamEvalRepository examEvalRepository;
     private final ExamRepository examRepository;
     private final ExamTestRepository examTestRepository;
     private final ModelMapper modelMapper;
@@ -84,13 +85,14 @@ public class TestServiceImpl implements TestService {
             ComponentWriteRepository componentWriteRepository,
             ComponentRepository componentRepository, PartAnswerRepository partAnswerRepository,
             TestAudioRepository testAudioRepository,
-            ExamRepository examRepository, ExamTestRepository examTestRepository, ModelMapper modelMapper, SecurityUtils securityUtils) {
+            ExamEvalRepository examEvalRepository, ExamRepository examRepository, ExamTestRepository examTestRepository, ModelMapper modelMapper, SecurityUtils securityUtils) {
         this.testRepository = testRepository;
         this.partRepository = partRepository;
         this.componentWriteRepository = componentWriteRepository;
         this.componentRepository = componentRepository;
         this.partAnswerRepository = partAnswerRepository;
         this.testAudioRepository = testAudioRepository;
+        this.examEvalRepository = examEvalRepository;
         this.examRepository = examRepository;
         this.examTestRepository = examTestRepository;
         this.modelMapper = modelMapper;
@@ -556,6 +558,11 @@ public class TestServiceImpl implements TestService {
         }
         response.setResult(correctAnswersForSkill);
         return response;
+    }
+
+    @Override
+    public void savePointWritingByExamId(Long examId, PointDTO pointDTO) {
+        examEvalRepository.savePointWritingSkillByExamId(examId,pointDTO.getPoint());
     }
 
     private Stream<ComponentDataResponse> processChooseAnswerComponent(@NotNull Component component) {

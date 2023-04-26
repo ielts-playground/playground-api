@@ -1,11 +1,13 @@
 package org.ielts.playground.service;
 
 import org.ielts.playground.common.enumeration.PartType;
+import org.ielts.playground.model.dto.PointDTO;
 import org.ielts.playground.model.request.TestCreationRequest;
 import org.ielts.playground.model.response.DisplayAllDataResponse;
 import org.ielts.playground.model.response.ResultCheckingResponse;
 import org.ielts.playground.model.response.TestCreationResponse;
 import org.springframework.lang.Nullable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.constraints.NotNull;
 import java.util.Map;
@@ -19,4 +21,6 @@ public interface TestService {
     TestCreationResponse create(@NotNull TestCreationRequest request);
     DisplayAllDataResponse retrieveRandomExamBySkill(@Nullable Long examId, PartType skill);
     ResultCheckingResponse checkReadingAndListeningResult(@NotNull Long examId);
+
+    void savePointWritingByExamId(Long examId, PointDTO pointDTO);
 }

@@ -18,6 +18,11 @@ public final class PathConstants {
     public static final String API_REGISTRATION_URL = API_BASE_URL + "/register";
 
     public static final String API_POSTS_BASE_URL = API_BASE_URL + "/posts";
+
+    public static final String API_GET_EXAM_NOT_GRADED_URL = API_BASE_URL + "/exam/not-graded";
+
+    public static final String API_EVALUATION_WRITING = API_BASE_URL + "/exam/{examId}/evaluate/writing";
+
     public static final String API_POSTS_CREATION_URL = API_POSTS_BASE_URL + "";
     public static final String API_POSTS_SEARCH_URL = API_POSTS_BASE_URL + "";
     public static final String API_POSTS_VIEW_URL = API_POSTS_BASE_URL + "/{postId}";
