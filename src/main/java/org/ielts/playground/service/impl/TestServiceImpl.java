@@ -17,6 +17,7 @@ import org.ielts.playground.model.dto.PointDTO;
 import org.ielts.playground.model.dto.UserAnswerAndTrueAnswerDto;
 import org.ielts.playground.model.entity.Component;
 import org.ielts.playground.model.entity.Exam;
+import org.ielts.playground.model.entity.ExamEval;
 import org.ielts.playground.model.entity.ExamTest;
 import org.ielts.playground.model.entity.Part;
 import org.ielts.playground.model.entity.PartAnswer;
@@ -560,9 +561,21 @@ public class TestServiceImpl implements TestService {
         return response;
     }
 
+    @Transactional
     @Override
     public void savePointWritingByExamId(Long examId, PointDTO pointDTO) {
-        examEvalRepository.savePointWritingSkillByExamId(examId,pointDTO.getPoint());
+        try {
+            final ResultCheckingResponse response = this.checkReadingAndListeningResult(examId);
+            this.examEvalRepository.save(ExamEval.builder()
+                    .examId(examId)
+                    .writingPoint(pointDTO.getPoint())
+                    .readingPoint(response.getResult().get(PartType.READING.getValue()).getCorrect())
+                    .listeningPoint(response.getResult().get(PartType.LISTENING.getValue()).getCorrect())
+                    .createdBy(this.securityUtils.getLoggedUserId())
+                    .build());
+        } catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
     }
 
     private Stream<ComponentDataResponse> processChooseAnswerComponent(@NotNull Component component) {

@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ExamEvalRepository extends CrudRepository<ExamEval, Long> {
 
@@ -28,6 +29,9 @@ public interface ExamEvalRepository extends CrudRepository<ExamEval, Long> {
             "       ee.writingPoint = 0 " +
             "   ORDER BY e.id DESC ")
     Long getAllExamIdNotGraded();
+
+    @Query(value = " SELECT ee FROM ExamEval ee WHERE ee.examId = :examId ")
+    Optional<ExamEval> findByExamId(@Param("examId") Long examId);
 
     @Query(value = "update ExamEval ee set ee.writingPoint = :point where ee.examId = :examId ")
     void savePointWritingSkillByExamId(@Param("examId")Long examId, @Param("point") Long point);

@@ -3,6 +3,7 @@ package org.ielts.playground.service;
 import org.ielts.playground.common.enumeration.PartType;
 import org.ielts.playground.model.request.ExamSubmissionRequest;
 import org.ielts.playground.model.response.ExamAnswerRetrievalResponse;
+import org.ielts.playground.model.response.ExamFinalResultResponse;
 import org.ielts.playground.model.response.ResultAllExamIdResponse;
 import org.ielts.playground.model.response.WritingTestRetrievalResponse;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +37,13 @@ public interface ExamService {
     ExamAnswerRetrievalResponse retrieveExamAnswer(
             @NotNull Long examId,
             @NotNull PartType partType);
+
+    /**
+     * Retrieves the final result of a specific examination.
+     *
+     * @param examId the examination's id.
+     */
+    ExamFinalResultResponse retrieveFinalResult(@NotNull Long examId);
 
     ResultAllExamIdResponse getAllExamNotGraded(Long page, Long size);
 

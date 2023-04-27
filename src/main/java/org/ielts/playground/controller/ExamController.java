@@ -5,6 +5,7 @@ import org.ielts.playground.common.constant.PathConstants;
 import org.ielts.playground.common.enumeration.PartType;
 import org.ielts.playground.model.request.ExamSubmissionRequest;
 import org.ielts.playground.model.response.ExamAnswerRetrievalResponse;
+import org.ielts.playground.model.response.ExamFinalResultResponse;
 import org.ielts.playground.model.response.ResultAllExamIdResponse;
 import org.ielts.playground.model.response.WritingTestRetrievalResponse;
 import org.ielts.playground.service.ExamService;
@@ -48,6 +49,13 @@ public class ExamController {
             @PathVariable Long id,
             @PathVariable String skill) {
         return this.service.retrieveExamAnswer(id, PartType.of(skill));
+    }
+
+    @RequireAdmin
+    @GetMapping(PathConstants.API_EXAM_FINAL_RESULT_URL)
+    public ExamFinalResultResponse retrieveFinalResult(
+            @PathVariable Long id) {
+        return this.service.retrieveFinalResult(id);
     }
 
     @GetMapping(PathConstants.API_GET_EXAM_NOT_GRADED_URL)

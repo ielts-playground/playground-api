@@ -38,4 +38,7 @@ public class ExamEval extends BaseEntity{
     @Column(name = "listening_point")
     private Long listeningPoint;
 
+    @Column(name = "created_by")
+    private Long createdBy;
+
 }

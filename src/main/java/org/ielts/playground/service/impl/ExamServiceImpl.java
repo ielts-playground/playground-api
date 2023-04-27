@@ -8,14 +8,19 @@ import org.ielts.playground.model.dto.ComponentWithPartNumber;
 import org.ielts.playground.model.dto.ExamIdDTO;
 import org.ielts.playground.model.entity.Component;
 import org.ielts.playground.model.entity.ExamAnswer;
+import org.ielts.playground.model.entity.ExamEval;
+import org.ielts.playground.model.entity.User;
 import org.ielts.playground.model.request.ExamSubmissionRequest;
 import org.ielts.playground.model.response.ExamAnswerRetrievalResponse;
+import org.ielts.playground.model.response.ExamFinalResultResponse;
 import org.ielts.playground.model.response.ResultAllExamIdResponse;
+import org.ielts.playground.model.response.UserInfoResponse;
 import org.ielts.playground.model.response.WritingTestRetrievalResponse;
 import org.ielts.playground.repository.ComponentRepository;
 import org.ielts.playground.repository.ExamAnswerRepository;
 import org.ielts.playground.repository.ExamEvalRepository;
 import org.ielts.playground.repository.ExamTestRepository;
+import org.ielts.playground.repository.UserRepository;
 import org.ielts.playground.service.ExamService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -34,17 +39,21 @@ public class ExamServiceImpl implements ExamService {
     private final ExamAnswerRepository examAnswerRepository;
 
     private final ExamEvalRepository examEvalRepository;
+    private final UserRepository userRepository;
 
     public ExamServiceImpl(
             // @Lazy ExamServiceImpl self,
             ComponentRepository componentRepository,
             ExamTestRepository examTestRepository,
-            ExamAnswerRepository examAnswerRepository, ExamEvalRepository examEvalRepository) {
+            ExamAnswerRepository examAnswerRepository,
+            ExamEvalRepository examEvalRepository,
+            UserRepository userRepository) {
         // this.self = self;
         this.componentRepository = componentRepository;
         this.examTestRepository = examTestRepository;
         this.examAnswerRepository = examAnswerRepository;
         this.examEvalRepository = examEvalRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -121,6 +130,31 @@ public class ExamServiceImpl implements ExamService {
                 .total(allExam)
                 .build();
         return resultAllExamIdResponse;
+    }
+
+    @Override
+    public ExamFinalResultResponse retrieveFinalResult(Long examId) {
+        final ExamEval examEval = this.examEvalRepository.findByExamId(examId)
+                .orElseThrow(NotFoundException::new);
+        final User examinee = this.userRepository.findByExamId(examId)
+                .orElseThrow(NotFoundException::new);
+        final String examiner = this.userRepository.findById(examEval.getCreatedBy())
+                .map(User::getUsername)
+                .orElse(null);
+        return ExamFinalResultResponse.builder()
+                .examId(examId)
+                .readingCorrectAnswers(examEval.getReadingPoint())
+                .listeningCorrectAnswers(examEval.getListeningPoint())
+                .writingEvaluation(examEval.getWritingPoint())
+                .examiner(examiner)
+                .examinee(UserInfoResponse.builder()
+                        .username(examinee.getUsername())
+                        .email(examinee.getEmail())
+                        .firstName(examinee.getFirstName())
+                        .lastName(examinee.getLastName())
+                        .phoneNumber(examinee.getPhoneNumber())
+                        .build())
+                .build();
     }
 
     /**
