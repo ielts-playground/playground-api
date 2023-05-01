@@ -294,6 +294,9 @@ public class TestServiceImpl implements TestService {
 
         Random rand = new Random();
         Long testId = testIds.get(rand.nextInt(testIds.size()));
+        if (PartType.LISTENING.equals(type)) {
+            displayAllDataResponse.setTestId(testId); // resourceId
+        }
         List<ComponentWithPartNumber> testComponents = componentRepository.findByTestId(testId);
 
         final Map<Long, List<Component>> partComponents = new HashMap<>();
