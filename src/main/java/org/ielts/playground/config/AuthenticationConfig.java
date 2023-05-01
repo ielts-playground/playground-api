@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
+import org.ielts.playground.common.constant.ValidationConstants;
 import org.ielts.playground.model.dto.BasicUserDetails;
 import org.ielts.playground.repository.UserRepository;
 
@@ -28,6 +28,6 @@ public class AuthenticationConfig {
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username)
                 .<UserDetails>map(BasicUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+                .orElseThrow(() -> new UsernameNotFoundException(ValidationConstants.UNAUTHORIZED));
     }
 }

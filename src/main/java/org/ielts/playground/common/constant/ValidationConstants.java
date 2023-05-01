@@ -4,6 +4,7 @@ public final class ValidationConstants {
     private ValidationConstants() {
     }
 
+    public static final String UNAUTHORIZED = "unauthorized";
     public static final String CANNOT_JOIN_EXAM = "cannot join exam";
     public static final String ARGUMENT_INVALID = "argument invalid";
     public static final String TEST_NOT_FOUND = "test not found";
