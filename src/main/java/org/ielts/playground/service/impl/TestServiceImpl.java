@@ -635,7 +635,15 @@ public class TestServiceImpl implements TestService {
         response.setType(ClientComponentType.ANSWER_PARAGRAPH.getValue());
         response.setLastText("");
         response.setIsDownLine(Boolean.FALSE);
-        response.setText(component.getValue().toString());
+        if (ComponentType.IMAGE.equals(component.getType())) {
+            response.setText(String.format(
+                    "\n\n![](%s)\n\n", component.getValue().toString()));
+        } else if (ComponentType.TITLE.equals(component.getType())) {
+            response.setText(String.format(
+                    "\n\n**%s**\n\n", component.getValue().toString()));
+        } else {
+            response.setText(component.getValue().toString());
+        }
         return response;
     }
 
@@ -649,6 +657,8 @@ public class TestServiceImpl implements TestService {
     }
 
     private static String replaceAllBreakLines(@NotNull String text) {
-        return text.replaceAll("<br>", "\n\n");
+        return text
+                .replaceAll("<span>(.*?)</span>", "$1")
+                .replaceAll("<br>", "\n\n");
     }
 }
