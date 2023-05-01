@@ -549,7 +549,7 @@ public class TestServiceImpl implements TestService {
                         }
                     }
                     correctAnswers.setTotal(correctAnswers.getTotal() + trueAnswers.size());
-                } catch (JsonProcessingException ex) {
+                } catch (Exception ex) {
                     //
                 }
             } else {
