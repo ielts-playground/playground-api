@@ -392,7 +392,11 @@ public class TestServiceImpl implements TestService {
                                     boxComponent.setPartId(component.getPartId());
                                     boxComponent.setType(ComponentType.BOX);
                                     boxComponent.setKei(component.getKei());
-                                    return Stream.of(textComponent, boxComponent); // thêm ô trống ở sau
+                                    Component newLineComponent = new Component();
+                                    newLineComponent.setPartId(component.getPartId());
+                                    newLineComponent.setType(ComponentType.TEXT);
+                                    newLineComponent.setValue(new Raw("\n\n"));
+                                    return Stream.of(textComponent, boxComponent, newLineComponent); // thêm ô trống ở sau
                                 }
                                 return Stream.of(component);
                             })
