@@ -58,6 +58,7 @@ public class ExamController {
         return this.service.retrieveFinalResult(id);
     }
 
+    @RequireAdmin
     @GetMapping(PathConstants.API_GET_EXAM_NOT_GRADED_URL)
     public ResultAllExamIdResponse search(@RequestParam Long page, @RequestParam Long size) {
         return this.service.getAllExamNotGraded(page, size);

@@ -10,4 +10,5 @@ import java.util.List;
 public class ExamIdDTO {
 
     private Long examId;
+    private String userName;
 }

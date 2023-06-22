@@ -25,6 +25,8 @@ import org.ielts.playground.service.ExamService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Tuple;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -121,10 +123,11 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public ResultAllExamIdResponse getAllExamNotGraded(Long page, Long size) {
 
-        List<Long> examPage = examEvalRepository.getAllExamIdNotGradedByPage(size, page * size);
+        List<Tuple> examPage = examEvalRepository.getAllExamIdNotGradedByPage(size, page * size);
+
         Long allExam = examEvalRepository.getAllExamIdNotGraded();
         ResultAllExamIdResponse resultAllExamIdResponse = ResultAllExamIdResponse.builder()
-                .examIds(examPage.stream().map(examId -> new ExamIdDTO(examId)).collect(Collectors.toList()))
+                .examIds(examPage.stream().map(e-> new ExamIdDTO(e.get(0, BigInteger.class).longValue(), e.get(1, String.class))).collect(Collectors.toList()))
                 .page(page)
                 .size(size)
                 .total(allExam)
