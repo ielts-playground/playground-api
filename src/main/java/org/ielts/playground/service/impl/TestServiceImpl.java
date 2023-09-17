@@ -611,17 +611,19 @@ public class TestServiceImpl implements TestService {
             question.setType(clientComponentType.getValue());
             question.setNumberOrder(null);
             question.setQuestionTitle(((Raw) component.getValue()).getValue());
-            final List<OptionResponse> options = new ArrayList<>();
-            final Set<String> keys = component.getOptions().keys();
-            for (String key : keys) {
-                String value = component.getOptions().get(key);
-                OptionResponse option = new OptionResponse();
-                option.setTitle(value);
-                option.setValue(key);
-                options.add(option);
+            if (Objects.nonNull(component.getOptions())) {
+                final List<OptionResponse> options = new ArrayList<>();
+                final Set<String> keys = component.getOptions().keys();
+                for (String key : keys) {
+                    String value = component.getOptions().get(key);
+                    OptionResponse option = new OptionResponse();
+                    option.setTitle(value);
+                    option.setValue(key);
+                    options.add(option);
+                }
+                question.setOptions(options);
             }
             question.setSubId(from); // subId là id của câu hỏi đầu tiên
-            question.setOptions(options);
             questions.add(question);
         }
         return questions.stream();
