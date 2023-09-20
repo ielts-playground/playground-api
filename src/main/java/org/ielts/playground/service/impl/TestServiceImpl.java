@@ -143,6 +143,8 @@ public class TestServiceImpl implements TestService {
                 final Long partNumber = partComponent.getPart();
                 Component component = this.modelMapper.map(partComponent, Component.class);
                 component.setType(ComponentType.of(partComponent.getType()));
+                component.setPosition(Optional.ofNullable(partComponent.getPosition())
+                        .map(Object::toString).orElse(null));
                 parts.computeIfAbsent(partNumber, k -> new ArrayList<>()).add(component);
             });
 

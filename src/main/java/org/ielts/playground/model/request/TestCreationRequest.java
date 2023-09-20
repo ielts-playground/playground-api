@@ -35,6 +35,7 @@ public class TestCreationRequest {
     @Builder
     public static class PartComponent {
         private Long part;
+        private Long position;
         private String type;
         private String kei;
         private Text value;
