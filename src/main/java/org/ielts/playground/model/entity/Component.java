@@ -13,6 +13,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.ielts.playground.common.enumeration.ComponentType;
 import org.ielts.playground.model.entity.type.Map;
+import org.ielts.playground.model.entity.type.Raw;
 import org.ielts.playground.model.entity.type.Text;
 
 @Data
@@ -48,4 +49,11 @@ public class Component extends BaseEntity {
 
     @Column(name = "options")
     private Map options;
+
+    public static Component empty() {
+        return Component.builder()
+                .type(ComponentType.TEXT)
+                .value(new Raw(""))
+                .build();
+    }
 }

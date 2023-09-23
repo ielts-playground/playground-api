@@ -1,6 +1,5 @@
 package org.ielts.playground.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import lombok.Getter;
@@ -79,6 +78,8 @@ public class TestServiceImpl implements TestService {
     private final ExamTestRepository examTestRepository;
     private final ModelMapper modelMapper;
     private final SecurityUtils securityUtils;
+
+    private final Random rand = new Random();
 
     public TestServiceImpl(
             TestRepository testRepository,
@@ -236,7 +237,7 @@ public class TestServiceImpl implements TestService {
         private boolean hasQuestion;
         private boolean hasOptions;
 
-        public ClientComponentType build() {
+        ClientComponentType build() {
             if (this.hasQuestion && this.hasOptions) {
                 return ClientComponentType.CHOOSE_ANSWER;
             }
@@ -294,8 +295,7 @@ public class TestServiceImpl implements TestService {
             throw new NotFoundException(ValidationConstants.TEST_NOT_FOUND);
         }
 
-        Random rand = new Random();
-        Long testId = testIds.get(rand.nextInt(testIds.size()));
+        Long testId = testIds.get(this.rand.nextInt(testIds.size()));
         if (PartType.LISTENING.equals(type)) {
             displayAllDataResponse.setTestId(testId); // resourceId
         }
@@ -382,7 +382,9 @@ public class TestServiceImpl implements TestService {
                             .collect(Collectors.toList()));
                     listTypeQuestion.add(clientComponentType.getValue());
                 } else if (ClientComponentType.ANSWER_PARAGRAPH.equals(componentType)) {
-                    List<Component> convertedComponents /* danh sách các components sau khi chuyển đổi thằng QUESTION về TEXT */ = componentRange.getComponents().stream()
+                    List<Component> convertedComponents /* danh sách các components sau khi chuyển đổi thằng QUESTION về TEXT */ = new ArrayList<>();
+                    convertedComponents.add(Component.empty());
+                    convertedComponents.addAll(componentRange.getComponents().stream()
                             .flatMap(component -> {
                                 if (ComponentType.QUESTION.equals(component.getType()) && Objects.isNull(component.getOptions())) {
                                     Component textComponent = new Component();
@@ -402,11 +404,8 @@ public class TestServiceImpl implements TestService {
                                 }
                                 return Stream.of(component);
                             })
-                            .collect(Collectors.toList());
-                    convertedComponents.add(Component.builder()
-                            .type(ComponentType.TEXT)
-                            .value(new Raw(""))
-                            .build());
+                            .collect(Collectors.toList()));
+                    convertedComponents.add(Component.empty());
 
                     List<Component> mergedComponents = new ArrayList<>();
                     Component current = null;
@@ -422,10 +421,7 @@ public class TestServiceImpl implements TestService {
                             ));
                         } else if (ComponentType.BOX.equals(next.getType())) { // nếu thằng tiếp theo là BOX thì gán id
                             if (Objects.isNull(current)) { // trường hợp hai BOX đứng cạnh nhau
-                                current = Component.builder()
-                                        .type(ComponentType.TEXT)
-                                        .value(new Raw(""))
-                                        .build();
+                                current = Component.empty();
                                 mergedComponents.add(current);
                             }
                             current.setKei(next.getKei());
@@ -462,11 +458,10 @@ public class TestServiceImpl implements TestService {
                     listTypeQuestion.add(ClientComponentType.ANSWER_PARAGRAPH.getValue() + clientComponentTypeSuffix);
 
                 } else {
-                    List<Component> convertedComponents = componentRange.getComponents();
-                    convertedComponents.add(Component.builder()
-                            .type(ComponentType.TEXT)
-                            .value(new Raw(""))
-                            .build());
+                    List<Component> convertedComponents = new ArrayList<>();
+                    convertedComponents.add(Component.empty());
+                    convertedComponents.addAll(componentRange.getComponents());
+                    convertedComponents.add(Component.empty());
 
                     List<Component> mergedComponents = new ArrayList<>();
                     Component current = convertedComponents.get(0);
@@ -498,10 +493,10 @@ public class TestServiceImpl implements TestService {
                     listTypeQuestion.add(ClientComponentType.UNKNOWN.getValue() + clientComponentTypeSuffix);
                 }
 
-                if (ComponentPosition.LEFT.equals(position)) {
-                    leftContent.addAll(componentDataResponses);
-                } else {
+                if (ComponentPosition.RIGHT.equals(position)) {
                     rightContent.addAll(componentDataResponses);
+                } else {
+                    leftContent.addAll(componentDataResponses);
                 }
                 numberOrder.setValue(numberOrder.getValue() + 1); // tăng numberId cho range tiếp theo
             }

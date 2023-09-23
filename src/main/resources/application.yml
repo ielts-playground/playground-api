@@ -74,7 +74,7 @@ spring:
           batch_size: 10
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://54.251.23.202:33060/playground?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/playground?useUnicode=true&characterEncoding=UTF-8
     username: root
     password: 123
   liquibase:
