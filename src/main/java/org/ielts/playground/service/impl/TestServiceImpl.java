@@ -429,7 +429,7 @@ public class TestServiceImpl implements TestService {
                             i++;
                         } else if (ComponentType.TITLE.equals(next.getType())) {
                             current.setValue(new Raw(
-                                    String.format("%s\n\n**%s**\n\n", current.getValue().toString(), next.getValue().toString())
+                                    String.format("%s\n\n<div class=\"title\">%s</div>\n\n", current.getValue().toString(), next.getValue().toString())
                             ));
                         } else if (ComponentType.IMAGE.equals(next.getType())) {
                             current.setValue(new Raw(
@@ -474,7 +474,7 @@ public class TestServiceImpl implements TestService {
                             ));
                         } else if (ComponentType.TITLE.equals(next.getType())) {
                             current.setValue(new Raw(
-                                    String.format("%s\n\n**%s**\n\n", current.getValue().toString(), next.getValue().toString())
+                                    String.format("%s\n\n<div class=\"title\">%s</div>\n\n", current.getValue().toString(), next.getValue().toString())
                             ));
                         } else if (ComponentType.IMAGE.equals(next.getType())) {
                             current.setValue(new Raw(
@@ -643,7 +643,7 @@ public class TestServiceImpl implements TestService {
                     "\n\n![](%s)\n\n", component.getValue().toString()));
         } else if (ComponentType.TITLE.equals(component.getType())) {
             response.setText(String.format(
-                    "\n\n**%s**\n\n", component.getValue().toString()));
+                    "\n\n<div class=\"title\">%s</div>\n\n", component.getValue().toString()));
         } else {
             response.setText(component.getValue().toString());
         }
