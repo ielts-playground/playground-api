@@ -114,11 +114,20 @@ public class TestServiceImpl implements TestService {
             throw new BadRequestException(ValidationConstants.AUDIO_MISSING);
         }
 
-        final Long testId = this.testRepository.save(Test.builder()
-                .createdBy(this.securityUtils.getLoggedUserId())
-                .active(Boolean.TRUE)
-                .build()).getId();
+        Long id = request.getId(); // testId
+        if (Objects.nonNull(id)) {
+            boolean partExisted = this.partRepository.existsByTestIdAndType(id, type);
+            if (partExisted) {
+                throw new BadRequestException(ValidationConstants.PART_EXISTED);
+            }
+        } else {
+            id = this.testRepository.save(Test.builder()
+                    .createdBy(this.securityUtils.getLoggedUserId())
+                    .active(Boolean.TRUE)
+                    .build()).getId();
+        }
 
+        final Long testId = id;
         final Map<Long, Long> partIds = this.createComponents(testId, type, request.getComponents());
         this.createAnswers(partIds, request.getAnswers());
         if (!Objects.isNull(audio)) {

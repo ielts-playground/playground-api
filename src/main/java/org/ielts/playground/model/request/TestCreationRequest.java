@@ -17,6 +17,9 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class TestCreationRequest {
+    @Nullable
+    private Long id;
+
     @NotNull
     private String skill;
 
