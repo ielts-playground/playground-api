@@ -19,6 +19,15 @@ public interface TestService {
      * @param request the part's information.
      */
     TestCreationResponse create(@NotNull TestCreationRequest request);
+
+    /**
+     * Same as {@link #create(TestCreationRequest)} but supports 3 skills at once.
+     */
+    TestCreationResponse createAll(
+            @NotNull TestCreationRequest listening,
+            @NotNull TestCreationRequest reading,
+            @NotNull TestCreationRequest writing
+    );
     DisplayAllDataResponse retrieveRandomExamBySkill(@Nullable Long examId, PartType skill);
     ResultCheckingResponse checkReadingAndListeningResult(@NotNull Long examId);
 
