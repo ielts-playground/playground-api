@@ -33,14 +33,16 @@ public class PrivateResourceFilter implements Filter, AuthenticationChangeable, 
             throws ServletException, IOException {
         Optional.ofNullable(this.requestChecker.retrievePublicPermission(request))
                 .ifPresentOrElse(this::setAuthentication, () -> {
-                    final String client = utils.retrieveRequestClient(request);
+                    final String client = this.utils.retrieveRequestClient(request);
                     final String[] clients = this.requestChecker.retrievePermittedClients(request);
                     final boolean permitted = Optional.ofNullable(clients)
                             .map(group -> new HashSet<>(Arrays.asList(clients)).contains(client))
                             .orElse(Objects.nonNull(client));
                     if (permitted) {
                         this.setAuthentication(
-                            new PrivateResourceAuthToken(client, Collections.emptyList())
+                            new PrivateResourceAuthToken(Optional.ofNullable(this.utils
+                                    .retrieveClientForwardedUsername(request))
+                                    .orElse(client), Collections.emptyList())
                         );
                     } else {
                         this.setAuthentication(null);

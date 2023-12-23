@@ -76,10 +76,11 @@ public class PrivateResourceUtils {
         return Optional.ofNullable(request.getHeader(this.properties.getHeaderKey()))
                 .flatMap(key -> Optional.ofNullable(this.keyMap.get(key))
                 .map(PrivateProperties.SecretKey::getName))
-                .map(client -> Optional.ofNullable(request
-                        .getHeader(this.properties.getForwardedUserHeaderKey()))
-                        .orElse(client))
                 .orElse(null);
+    }
+
+    public String retrieveClientForwardedUsername(HttpServletRequest request) {
+        return request.getHeader(this.properties.getForwardedUserHeaderKey());
     }
 
     public String getPath() {
