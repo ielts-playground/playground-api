@@ -1,6 +1,7 @@
 package org.ielts.playground.service.impl;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.ielts.playground.common.enumeration.Subscription;
@@ -48,6 +49,7 @@ public class UserServiceImpl implements UserService {
                         .firstName(user.getFirstName())
                         .lastName(user.getLastName())
                         .phoneNumber(user.getPhoneNumber())
+                        .subscription(Objects.toString(user.getSubscription()))
                         .build());
     }
 

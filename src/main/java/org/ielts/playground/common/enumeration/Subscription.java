@@ -25,4 +25,9 @@ public enum Subscription {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return this.value;
+    }
 }
