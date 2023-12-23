@@ -2,6 +2,7 @@ package org.ielts.playground.service;
 
 import java.util.Optional;
 
+import org.ielts.playground.model.request.UserUpdateRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import org.ielts.playground.model.request.AuthenticationRequest;
@@ -27,4 +28,11 @@ public interface UserService {
      * @param userRegistration the user's information.
      */
     void createUser(UserRegistrationRequest userRegistration);
+
+    /**
+     * Updates the information of a user.
+     *
+     * @param userUpdateRequest the user's information.
+     */
+    UserInfoResponse updateUserInfo(UserUpdateRequest userUpdateRequest);
 }

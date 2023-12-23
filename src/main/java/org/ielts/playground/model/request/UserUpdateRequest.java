@@ -1,30 +1,33 @@
 package org.ielts.playground.model.request;
 
-import javax.validation.constraints.NotNull;
-
 import lombok.Data;
 import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.NotNull;
+
 @Data
-public class UserRegistrationRequest {
+public class UserUpdateRequest {
     @NotNull
     private String username;
 
-    @NotNull
+    @Nullable
     private String password;
 
-    @NotNull
+    @Nullable
     private String email;
 
-    @NotNull
+    @Nullable
     private String firstName;
 
-    @NotNull
+    @Nullable
     private String lastName;
 
-    @NotNull
+    @Nullable
     private String phoneNumber;
 
     @Nullable
     private String subscription;
+
+    @Nullable
+    private Boolean activated;
 }
