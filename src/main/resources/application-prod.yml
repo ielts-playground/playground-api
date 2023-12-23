@@ -24,6 +24,7 @@ server:
       private:
         path: /private/**
         header-key: X-Api-Key
+        forwarded-user-header-key: X-Forwarded-For-User
         secret-keys:
           - value: ${PRIVATE_KEY_V2_CLIENT}
             name: v2
