@@ -17,6 +17,7 @@ public final class PathConstants {
     public static final String API_AUTHENTICATION_URL = API_BASE_URL + "/authenticate";
     public static final String API_REGISTRATION_URL = API_BASE_URL + "/register";
     public static final String PRIVATE_REGISTRATION_URL = PRIVATE_BASE_URL + "/register";
+    public static final String PRIVATE_USER_UPDATE_URL = PRIVATE_BASE_URL + "/users";
 
     public static final String API_POSTS_BASE_URL = API_BASE_URL + "/posts";
 

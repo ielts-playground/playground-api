@@ -4,8 +4,14 @@ import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
+import org.ielts.playground.common.annotation.RequireClient;
+import org.ielts.playground.common.constant.PrivateClientConstants;
+import org.ielts.playground.model.request.UserUpdateRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.ielts.playground.common.constant.PathConstants;
@@ -37,6 +43,13 @@ public class UserController {
     @GetMapping(PathConstants.API_ADMIN_USERS_INFO_URL)
     public UserInfoResponse info(@PathVariable @NotNull String username) {
         return this.getUserInfo(username);
+    }
+
+    @RequireClient(name = PrivateClientConstants.V2)
+    @PatchMapping(PathConstants.PRIVATE_USER_UPDATE_URL)
+    public UserInfoResponse updatePrivately(
+            @Validated @RequestBody UserUpdateRequest userUpdateRequest) {
+        return this.userService.updateUserInfo(userUpdateRequest);
     }
 
     private UserInfoResponse getUserInfo(String username) {
