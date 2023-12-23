@@ -22,6 +22,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.ielts.playground.common.enumeration.Subscription;
 
 @Data
 @Builder
@@ -52,6 +53,12 @@ public class User extends BaseEntity {
 
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    @Column(name = "subscription")
+    private Subscription subscription;
+
+    @Column(name = "activated")
+    private Boolean activated;
 
     @Builder.Default
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

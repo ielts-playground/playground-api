@@ -3,6 +3,7 @@ package org.ielts.playground.service.impl;
 import java.util.Collections;
 import java.util.Optional;
 
+import org.ielts.playground.common.enumeration.Subscription;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -64,6 +65,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(userRegistration.getLastName())
                 .phoneNumber(userRegistration.getPhoneNumber())
                 .roles(Collections.emptySet())
+                .subscription(Subscription.of(userRegistration.getSubscription()))
                 .build();
         this.userRepository.save(user);
     }

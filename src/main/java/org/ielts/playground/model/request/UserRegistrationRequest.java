@@ -3,6 +3,7 @@ package org.ielts.playground.model.request;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import org.springframework.lang.Nullable;
 
 @Data
 public class UserRegistrationRequest {
@@ -23,4 +24,7 @@ public class UserRegistrationRequest {
 
     @NotNull
     private String phoneNumber;
+
+    @Nullable
+    private String subscription;
 }

@@ -153,4 +153,26 @@
                 path="sql/18-create-table-exam-eval .sql"
         />
     </changeSet>
+    <changeSet id="19-add-column-subscription-to-table-user" author="Tuanm">
+        <preConditions>
+            <not>
+                <columnExists tableName="user" columnName="subscription"/>
+            </not>
+        </preConditions>
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/19-add-column-subscription-to-table-user.sql"
+        />
+    </changeSet>
+    <changeSet id="20-add-column-activated-to-table-user" author="Tuanm">
+        <preConditions>
+            <not>
+                <columnExists tableName="user" columnName="activated"/>
+            </not>
+        </preConditions>
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/20-add-column-activated-to-table-user.sql"
+        />
+    </changeSet>
 </databaseChangeLog>
