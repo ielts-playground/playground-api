@@ -2,6 +2,7 @@ package org.ielts.playground.controller;
 
 import lombok.extern.log4j.Log4j2;
 import org.ielts.playground.common.annotation.RequireAdmin;
+import org.ielts.playground.common.annotation.RequireClient;
 import org.ielts.playground.common.constant.PathConstants;
 import org.ielts.playground.utils.SecurityUtils;
 import org.joda.time.LocalDateTime;
@@ -17,6 +18,13 @@ import javax.annotation.PostConstruct;
 public class DevController {
     private final SecurityUtils securityUtils;
 
+    /**
+     * Retrieves the current logged user's name.
+     */
+    private String loggedUsername() {
+        return this.securityUtils.getLoggedUsername();
+    }
+
     public DevController(SecurityUtils securityUtils) {
         this.securityUtils = securityUtils;
     }
@@ -28,22 +36,28 @@ public class DevController {
 
     @GetMapping(PathConstants.PUBLIC_DEV_URL)
     public String publicTest() {
-        return "Hi!";
+        return "Hello World!";
     }
 
     @GetMapping(PathConstants.PRIVATE_DEV_URL)
     public String privateTest() {
-        return "Welcome to my village!";
+        return String.format("Welcome to my village, %s!", this.loggedUsername());
     }
 
     @GetMapping(PathConstants.API_DEV_URL)
     public String apiTest() {
-        return String.format("I love you, %s!", this.securityUtils.getLoggedUsername());
+        return String.format("Hi, %s!", this.loggedUsername());
     }
 
     @RequireAdmin
     @GetMapping(PathConstants.API_ADMIN_DEV_URL)
     public String adminTest() {
-        return String.format("Welcome back, Mr. %s! It's %s.", this.securityUtils.getLoggedUsername(), LocalDateTime.now());
+        return String.format("It's %s now. Don't forget your mission, %s!", LocalDateTime.now(), this.loggedUsername());
+    }
+
+    @RequireClient(name = "dev")
+    @GetMapping(PathConstants.PRIVATE_CLIENT_DEV_URL)
+    public String privateClientTest() {
+        return String.format("Oh! It's you, %s.", this.loggedUsername());
     }
 }

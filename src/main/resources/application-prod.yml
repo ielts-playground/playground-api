@@ -25,8 +25,8 @@ server:
         path: /private/**
         header-key: X-Api-Key
         secret-keys:
-          - value: ${PRIVATE_KEY_BASIC_CLIENT}
-            name: Basic Client
+          - value: ${PRIVATE_KEY_V2_CLIENT}
+            name: v2
       jwt:
         path: /api/**
         validity-in-seconds: ${JWT_VALIDITY_IN_SECONDS}

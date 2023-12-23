@@ -26,12 +26,16 @@ server:
         path: /private/**
         header-key: X-Api-Key
         secret-keys:
-          - value: this-is-a-private-key
-            name: Basic Client
+          - value: demo
+            name: demo
+          - value: "Let me in!"
+            name: dev
+          - value: "v2-secret"
+            name: v2
       jwt:
         path: /api/**
         validity-in-seconds: 3600
-        secret-key: this-is-a-jwt-secret-key
+        secret-key: "Keep it secret!"
 
 api:
   posts:

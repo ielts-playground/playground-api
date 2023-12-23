@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.ielts.playground.model.dto.BasicUserDetails;
+import org.ielts.playground.model.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,11 +39,20 @@ public class SecurityUtils {
     }
 
     private UserDetails getLoggedUserDetails() {
-        Optional<Object> user = Optional.ofNullable(SecurityContextHolder.getContext()
-                .getAuthentication()).map(Authentication::getPrincipal);
-        if (user.isPresent() && (user.get() instanceof UserDetails)) {
-            return (UserDetails) user.get();
-        }
-        return null;
+        return Optional.ofNullable(SecurityContextHolder.getContext()
+                .getAuthentication())
+                .map(Authentication::getPrincipal)
+                .map(principal -> {
+                    if (principal instanceof UserDetails) {
+                        return (UserDetails) principal;
+                    }
+                    if (principal instanceof String) {
+                        return new BasicUserDetails(User.builder()
+                                .username(principal.toString())
+                                .build());
+                    }
+                    return null;
+                })
+                .orElse(null);
     }
 }
