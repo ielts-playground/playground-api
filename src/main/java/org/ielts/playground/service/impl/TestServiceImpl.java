@@ -57,6 +57,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import javax.persistence.Tuple;
@@ -137,6 +138,22 @@ public class TestServiceImpl implements TestService {
         return TestCreationResponse.builder()
                 .id(testId)
                 .build();
+    }
+
+    @Transactional
+    @Override
+    public TestCreationResponse createAll(TestCreationRequest listening, TestCreationRequest reading, TestCreationRequest writing) {
+        final TestCreationResponse response = this.create(listening);
+        if (Objects.isNull(response.getId())) {
+            throw new BadRequestException(ValidationConstants.TEST_NOT_FOUND);
+        }
+        reading.setId(response.getId());
+        writing.setId(response.getId());
+        CompletableFuture.allOf(
+                CompletableFuture.runAsync(() -> this.create(reading)),
+                CompletableFuture.runAsync(() -> this.create(writing))
+        ).join();
+        return response;
     }
 
     @Transactional(propagation = Propagation.MANDATORY)

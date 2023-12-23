@@ -1,5 +1,7 @@
 package org.ielts.playground.controller;
 
+import org.ielts.playground.common.annotation.RequireClient;
+import org.ielts.playground.common.constant.PrivateClientConstants;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +41,13 @@ public class AuthenticationController {
     @RequireAdmin
     @PostMapping(PathConstants.API_REGISTRATION_URL)
     public void register(
+            @Validated @RequestBody UserRegistrationRequest userRegistrationRequest) {
+        this.userService.createUser(userRegistrationRequest);
+    }
+
+    @RequireClient(name = PrivateClientConstants.V2)
+    @PostMapping(PathConstants.PRIVATE_REGISTRATION_URL)
+    public void registerPrivately(
             @Validated @RequestBody UserRegistrationRequest userRegistrationRequest) {
         this.userService.createUser(userRegistrationRequest);
     }

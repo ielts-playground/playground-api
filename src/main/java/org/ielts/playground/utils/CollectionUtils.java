@@ -18,7 +18,7 @@ public final class CollectionUtils {
      * @param <T> the type.
      * @param list the list.
      */
-    public static final <T> List<T> emptyIfNull(@Nullable List<T> list) {
+    public static <T> List<T> emptyIfNull(@Nullable List<T> list) {
         return Optional.ofNullable(list).orElse(Collections.emptyList());
     }
 }

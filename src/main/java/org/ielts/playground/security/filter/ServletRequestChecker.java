@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 
+import org.ielts.playground.common.annotation.RequireClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
@@ -70,7 +71,7 @@ public class ServletRequestChecker {
      * @see PermitAll
      */
     public boolean isAllPermitted(HttpServletRequest request) {
-        return !Objects.isNull(this.retrieveHandlerAnnotation(
+        return Objects.nonNull(this.retrieveHandlerAnnotation(
                 request, PermitAll.class));
     }
 
@@ -79,8 +80,23 @@ public class ServletRequestChecker {
      * but for the administrated requests only.
      */
     public boolean isAdminRequired(HttpServletRequest request) {
-        return !Objects.isNull(this.retrieveHandlerAnnotation(
+        return Objects.nonNull(this.retrieveHandlerAnnotation(
                 request, RequireAdmin.class));
+    }
+
+    /**
+     * Retrieves all permitted clients for a private-resource request.
+     *
+     * @param request the request.
+     * @return an array of permitted clients' names if the private resource is restricted
+     * to a specific group of clients; otherwise, a {@code null} value will be returned
+     * with a meaning of allowing all clients to access this resource.
+     */
+    @Nullable
+    public String[] retrievePermittedClients(HttpServletRequest request) {
+        return Optional.ofNullable(this.retrieveHandlerAnnotation(
+                request, RequireClient.class)
+        ).map(RequireClient::name).orElse(null);
     }
 
     /**

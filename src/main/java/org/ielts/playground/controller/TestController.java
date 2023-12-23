@@ -38,6 +38,17 @@ public class TestController {
         return this.service.create(content);
     }
 
+    @RequireAdmin
+    @PutMapping(PathConstants.API_TEST_ALL_CREATION_URL)
+    public TestCreationResponse createAll(
+            @RequestPart(name = RequestConstants.AUDIO, required = false) final MultipartFile audio,
+            @Validated @RequestPart(RequestConstants.LISTENING) final TestCreationRequest listening,
+            @Validated @RequestPart(RequestConstants.READING) final TestCreationRequest reading,
+            @Validated @RequestPart(RequestConstants.WRITING) final TestCreationRequest writing) {
+        listening.setAudio(audio);
+        return this.service.createAll(listening, reading, writing);
+    }
+
     @GetMapping(PathConstants.API_GET_TEST_READING_SKILL)
     public DisplayAllDataResponse retrieveRandomReadingExam(
             @Nullable @RequestParam(name = "id", required = false) Long examId){

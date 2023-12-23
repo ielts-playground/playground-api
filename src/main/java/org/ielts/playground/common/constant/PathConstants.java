@@ -16,6 +16,7 @@ public final class PathConstants {
 
     public static final String API_AUTHENTICATION_URL = API_BASE_URL + "/authenticate";
     public static final String API_REGISTRATION_URL = API_BASE_URL + "/register";
+    public static final String PRIVATE_REGISTRATION_URL = PRIVATE_BASE_URL + "/register";
 
     public static final String API_POSTS_BASE_URL = API_BASE_URL + "/posts";
 
@@ -43,10 +44,12 @@ public final class PathConstants {
     public static final String API_DEV_URL = API_BASE_URL + "/dev";
     public static final String API_ADMIN_DEV_URL = API_ADMIN_BASE_URL + "/dev";
     public static final String PUBLIC_DEV_URL = PUBLIC_BASE_URL + "/dev";
+    public static final String PRIVATE_CLIENT_DEV_URL = PRIVATE_BASE_URL + "/client" + "/dev";
 
     public static final String API_ADMIN_USERS_INFO_URL = API_ADMIN_BASE_URL + "/users/{username}";
 
     public static final String API_TEST_CREATION_URL = API_BASE_URL + "/test";
+    public static final String API_TEST_ALL_CREATION_URL = API_BASE_URL + "/test/new";
     public static final String API_TEST_AUDIO_URL = API_BASE_URL + "/test/{id}/audio";
     public static final String API_EXAM_SUBMISSION_URL = API_BASE_URL + "/exam/{id}/submit";
     public static final String API_EXAM_WRITING_TEST_RETRIEVAL_URL = API_BASE_URL + "/exam/{id}/test/writing";

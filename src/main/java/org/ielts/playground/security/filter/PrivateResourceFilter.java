@@ -1,7 +1,9 @@
 package org.ielts.playground.security.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,7 +34,11 @@ public class PrivateResourceFilter implements Filter, AuthenticationChangeable, 
         Optional.ofNullable(this.requestChecker.retrievePublicPermission(request))
                 .ifPresentOrElse(this::setAuthentication, () -> {
                     final String client = utils.retrieveRequestClient(request);
-                    if (!Objects.isNull(client)) {
+                    final String[] clients = this.requestChecker.retrievePermittedClients(request);
+                    final boolean permitted = Optional.ofNullable(clients)
+                            .map(group -> new HashSet<>(Arrays.asList(clients)).contains(client))
+                            .orElse(Objects.nonNull(client));
+                    if (permitted) {
                         this.setAuthentication(
                             new PrivateResourceAuthToken(client, Collections.emptyList())
                         );
