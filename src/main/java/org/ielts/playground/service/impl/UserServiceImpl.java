@@ -79,6 +79,7 @@ public class UserServiceImpl implements UserService {
                 .phoneNumber(userRegistration.getPhoneNumber())
                 .roles(Collections.emptySet())
                 .subscription(Subscription.of(userRegistration.getSubscription()))
+                .activated(userRegistration.getActivated())
                 .build();
         this.userRepository.save(user);
     }
