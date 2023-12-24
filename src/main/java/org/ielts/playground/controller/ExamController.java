@@ -1,7 +1,9 @@
 package org.ielts.playground.controller;
 
 import org.ielts.playground.common.annotation.RequireAdmin;
+import org.ielts.playground.common.annotation.RequireClient;
 import org.ielts.playground.common.constant.PathConstants;
+import org.ielts.playground.common.constant.PrivateClientConstants;
 import org.ielts.playground.common.enumeration.PartType;
 import org.ielts.playground.model.request.ExamSubmissionRequest;
 import org.ielts.playground.model.response.ExamAnswerRetrievalResponse;
@@ -33,6 +35,12 @@ public class ExamController {
             @PathVariable Long id,
             @Validated @RequestBody ExamSubmissionRequest request) {
         request.setExamTestId(id);
+        this.service.submit(request);
+    }
+
+    @RequireClient(name = PrivateClientConstants.V2)
+    @PutMapping(PathConstants.PRIVATE_EXAM_SUBMISSION_URL)
+    public void submitPrivately(@Validated @RequestBody ExamSubmissionRequest request) {
         this.service.submit(request);
     }
 
