@@ -27,4 +27,7 @@ public class UserRegistrationRequest {
 
     @Nullable
     private String subscription;
+
+    @Nullable
+    private Boolean activated;
 }
