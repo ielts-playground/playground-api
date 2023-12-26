@@ -297,6 +297,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public DisplayAllDataResponse retrieveRandomExamBySkill(Long examId, PartType type) {
         final Long userId = this.securityUtils.getLoggedUserId();
+        Long testId;
         if (Objects.nonNull(examId)) { // kiểm tra xem user có quyền tham gia bài thi này không
             Exam exam = this.examRepository.findById(examId).orElse(null);
             if (Objects.isNull(exam)) {
@@ -305,6 +306,8 @@ public class TestServiceImpl implements TestService {
             if (!Objects.equals(userId, exam.getUserId())) {
                 throw new BadRequestException(ValidationConstants.CANNOT_JOIN_EXAM);
             }
+            testId = this.examTestRepository.getTestIdByExamId(examId);
+            // TODO: Kiểm tra xem có testId không
         } else {
             // TODO: kiểm tra xem còn bài thi nào user chưa hoàn thành (submitted) không?
             // TODO: nếu có và bài thi đó chưa hết hạn (cho một giới hạn là mấy tiếng đồng hồ chẳng hạn) thì không cho tạo bài thi mới
@@ -312,16 +315,16 @@ public class TestServiceImpl implements TestService {
                     .userId(userId)
                     .build();
             examId = this.examRepository.save(exam).getId();
+            List<Long> testIds = testRepository.allActiveTestIds(type);
+            if (testIds.isEmpty()) {
+                throw new NotFoundException(ValidationConstants.TEST_NOT_FOUND);
+            }
+            testId = testIds.get(this.rand.nextInt(testIds.size()));
         }
 
         DisplayAllDataResponse displayAllDataResponse = new DisplayAllDataResponse();
         displayAllDataResponse.setExamId(examId);
-        List<Long> testIds = testRepository.allActiveTestIds(type);
-        if (testIds.isEmpty()) {
-            throw new NotFoundException(ValidationConstants.TEST_NOT_FOUND);
-        }
 
-        Long testId = testIds.get(this.rand.nextInt(testIds.size()));
         if (PartType.LISTENING.equals(type)) {
             displayAllDataResponse.setTestId(testId); // resourceId
         }
