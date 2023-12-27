@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.ielts.playground.common.enumeration.Subscription;
 
 @Data
 @Builder
@@ -34,4 +35,7 @@ public class Test extends BaseEntity {
 
     @Column(name = "active")
     private Boolean active;
+
+    @Column(name = "subscription")
+    private Subscription subscription;
 }

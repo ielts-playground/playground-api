@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ielts.playground.common.enumeration.Subscription;
 import org.ielts.playground.model.entity.type.Map;
 import org.ielts.playground.model.entity.type.Text;
 import org.springframework.lang.Nullable;
@@ -22,6 +23,9 @@ public class TestCreationRequest {
 
     @NotNull
     private String skill;
+
+    @Nullable
+    private Subscription subscription;
 
     @NotNull
     private List<PartComponent> components;

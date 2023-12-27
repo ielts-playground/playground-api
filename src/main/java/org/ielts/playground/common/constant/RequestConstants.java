@@ -9,4 +9,5 @@ public final class RequestConstants {
     public static final String LISTENING = "listening";
     public static final String READING = "reading";
     public static final String WRITING = "writing";
+    public static final String SUBSCRIPTION = "subscription";
 }

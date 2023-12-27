@@ -6,6 +6,7 @@ import org.ielts.playground.common.constant.PathConstants;
 import org.ielts.playground.common.constant.PrivateClientConstants;
 import org.ielts.playground.common.constant.RequestConstants;
 import org.ielts.playground.common.enumeration.PartType;
+import org.ielts.playground.common.enumeration.Subscription;
 import org.ielts.playground.model.dto.PointDTO;
 import org.ielts.playground.model.request.TestCreationRequest;
 import org.ielts.playground.model.response.DisplayAllDataResponse;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 @RestController
 public class TestController {
@@ -44,11 +47,21 @@ public class TestController {
     @PutMapping(PathConstants.API_TEST_ALL_CREATION_URL)
     public TestCreationResponse createAll(
             @RequestPart(name = RequestConstants.AUDIO, required = false) final MultipartFile audio,
+            @RequestPart(name = RequestConstants.SUBSCRIPTION, required = false) final String subscription,
             @Validated @RequestPart(RequestConstants.LISTENING) final TestCreationRequest listening,
             @Validated @RequestPart(RequestConstants.READING) final TestCreationRequest reading,
             @Validated @RequestPart(RequestConstants.WRITING) final TestCreationRequest writing) {
         listening.setAudio(audio);
-        return this.service.createAll(listening, reading, writing);
+        Optional.ofNullable(Subscription.of(subscription)).ifPresent(s -> {
+            listening.setSubscription(s);
+            reading.setSubscription(s);
+            writing.setSubscription(s);
+        });
+        return this.service.createAll(
+                listening,
+                reading,
+                writing
+        );
     }
 
     @GetMapping(PathConstants.API_GET_TEST_READING_SKILL)
