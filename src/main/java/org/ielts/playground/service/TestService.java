@@ -7,10 +7,8 @@ import org.ielts.playground.model.response.DisplayAllDataResponse;
 import org.ielts.playground.model.response.ResultCheckingResponse;
 import org.ielts.playground.model.response.TestCreationResponse;
 import org.springframework.lang.Nullable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.constraints.NotNull;
-import java.util.Map;
 
 public interface TestService {
     /**

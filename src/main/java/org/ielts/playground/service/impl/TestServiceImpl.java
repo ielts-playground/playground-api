@@ -8,6 +8,7 @@ import org.ielts.playground.common.constant.ValidationConstants;
 import org.ielts.playground.common.enumeration.ComponentPosition;
 import org.ielts.playground.common.enumeration.ComponentType;
 import org.ielts.playground.common.enumeration.PartType;
+import org.ielts.playground.common.enumeration.Subscription;
 import org.ielts.playground.common.exception.BadRequestException;
 import org.ielts.playground.common.exception.InternalServerException;
 import org.ielts.playground.common.exception.NotFoundException;
@@ -105,6 +106,8 @@ public class TestServiceImpl implements TestService {
     @Transactional
     @Override
     public TestCreationResponse create(TestCreationRequest request) {
+        final Subscription subscription = Optional.ofNullable(request.getSubscription())
+                .orElse(Subscription.PREMIUM);
         final PartType type = PartType.of(request.getSkill());
         if (Objects.isNull(type)) {
             throw new BadRequestException(ValidationConstants.PART_TYPE_INVALID);
@@ -124,6 +127,7 @@ public class TestServiceImpl implements TestService {
         } else {
             id = this.testRepository.save(Test.builder()
                     .createdBy(this.securityUtils.getLoggedUserId())
+                    .subscription(subscription)
                     .active(Boolean.TRUE)
                     .build()).getId();
         }

@@ -175,4 +175,15 @@
                 path="sql/20-add-column-activated-to-table-user.sql"
         />
     </changeSet>
+    <changeSet id="21-add-column-subscription-to-table-test" author="Tuanm">
+        <preConditions>
+            <not>
+                <columnExists tableName="test" columnName="subscription"/>
+            </not>
+        </preConditions>
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/21-add-column-subscription-to-table-test.sql"
+        />
+    </changeSet>
 </databaseChangeLog>
