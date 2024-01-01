@@ -332,7 +332,7 @@ public class TestServiceImpl implements TestService {
         if (PartType.LISTENING.equals(type)) {
             displayAllDataResponse.setTestId(testId); // resourceId
         }
-        List<ComponentWithPartNumber> testComponents = componentRepository.findByTestId(testId);
+        List<ComponentWithPartNumber> testComponents = componentRepository.findByTestIdAndType(testId, type);
 
         final Map<Long, List<Component>> partComponents = new HashMap<>();
         for (ComponentWithPartNumber component : testComponents) {

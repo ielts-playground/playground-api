@@ -13,8 +13,8 @@ public interface ComponentRepository extends CrudRepository<Component, Long> {
     @Query(value = " SELECT c AS component, p.number as partNumber " +
             " FROM Component c " +
             " JOIN Part p ON p.id = c.partId " +
-            " WHERE p.testId = :testId ")
-    List<ComponentWithPartNumber> findByTestId(@Param("testId") Long testId);
+            " WHERE p.testId = :testId AND p.type = :type ")
+    List<ComponentWithPartNumber> findByTestIdAndType(@Param("testId") Long testId, @Param("type") PartType type);
 
     @Query(value = " SELECT c AS component, p.number as partNumber " +
             " FROM Component c " +
