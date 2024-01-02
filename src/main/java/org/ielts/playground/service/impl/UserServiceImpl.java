@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
     protected UserInfoResponse userInfoResponse(User user) {
         return Optional.ofNullable(user)
                 .map(u -> UserInfoResponse.builder()
+                    .id(u.getId())
                     .username(u.getUsername())
                     .email(u.getEmail())
                     .firstName(u.getFirstName())

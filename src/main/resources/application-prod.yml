@@ -55,16 +55,17 @@ spring:
       max-file-size: 500MB
       max-request-size: 500MB
   cache:
-    type: redis
+    type: ${SPRING_CACHE_TYPE:-none}
   redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-    password: ${REDIS_PASSWORD}
+    host: ${REDIS_HOST:-localhost}
+    port: ${REDIS_PORT:-6379}
+    password: '${REDIS_PASSWORD}'
     ttl:
       default-in-seconds: 3600
       posts-view: 7200
       posts-search: 300
       test-audio-get: 7200
+      user-info: 3600
   jpa:
     open-in-view: false
     show-sql: true
