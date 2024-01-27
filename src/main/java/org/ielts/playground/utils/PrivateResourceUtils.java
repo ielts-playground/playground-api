@@ -50,6 +50,10 @@ public class PrivateResourceUtils {
          */
         private String headerKey;
         /**
+         * The key in the Request Headers that contains the forwarded username.
+         */
+        private String forwardedUserHeaderKey;
+        /**
          * A lists of valid secret keys.
          */
         private List<SecretKey> secretKeys;
@@ -73,6 +77,10 @@ public class PrivateResourceUtils {
                 .flatMap(key -> Optional.ofNullable(this.keyMap.get(key))
                 .map(PrivateProperties.SecretKey::getName))
                 .orElse(null);
+    }
+
+    public String retrieveClientForwardedUsername(HttpServletRequest request) {
+        return request.getHeader(this.properties.getForwardedUserHeaderKey());
     }
 
     public String getPath() {

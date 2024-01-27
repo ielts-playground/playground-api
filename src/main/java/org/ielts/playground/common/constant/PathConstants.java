@@ -38,6 +38,8 @@ public final class PathConstants {
 
     public static final String API_GET_TEST_WRITING_SKILL = API_BASE_URL + "/random/writing";
 
+    public static final String PRIVATE_RANDOM_TEST_RETRIEVAL_URL = PRIVATE_BASE_URL + "/test/random";
+
     public static final String API_USERS_BASE_URL = API_BASE_URL + "/users";
     public static final String API_USERS_INFO_URL = API_USERS_BASE_URL + "";
 
@@ -52,7 +54,9 @@ public final class PathConstants {
     public static final String API_TEST_CREATION_URL = API_BASE_URL + "/test";
     public static final String API_TEST_ALL_CREATION_URL = API_BASE_URL + "/test/new";
     public static final String API_TEST_AUDIO_URL = API_BASE_URL + "/test/{id}/audio";
+    public static final String PRIVATE_API_TEST_AUDIO_URL = PRIVATE_BASE_URL + "/test/{id}/audio";
     public static final String API_EXAM_SUBMISSION_URL = API_BASE_URL + "/exam/{id}/submit";
+    public static final String PRIVATE_EXAM_SUBMISSION_URL = PRIVATE_BASE_URL + "/exam/submit";
     public static final String API_EXAM_WRITING_TEST_RETRIEVAL_URL = API_BASE_URL + "/exam/{id}/test/writing";
     public static final String API_EXAM_ANSWER_RETRIEVAL_URL = API_BASE_URL + "/exam/{id}/answer/{skill}";
     public static final String API_EXAM_FINAL_RESULT_URL = API_BASE_URL + "/exam/{id}/result";

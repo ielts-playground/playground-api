@@ -4,11 +4,14 @@ import org.ielts.playground.common.constant.ValidationConstants;
 import org.ielts.playground.common.enumeration.PartType;
 import org.ielts.playground.common.exception.BadRequestException;
 import org.ielts.playground.common.exception.NotFoundException;
+import org.ielts.playground.common.exception.UnauthorizedRequestException;
 import org.ielts.playground.model.dto.ComponentWithPartNumber;
 import org.ielts.playground.model.dto.ExamIdDTO;
 import org.ielts.playground.model.entity.Component;
+import org.ielts.playground.model.entity.Exam;
 import org.ielts.playground.model.entity.ExamAnswer;
 import org.ielts.playground.model.entity.ExamEval;
+import org.ielts.playground.model.entity.ExamTest;
 import org.ielts.playground.model.entity.User;
 import org.ielts.playground.model.request.ExamSubmissionRequest;
 import org.ielts.playground.model.response.ExamAnswerRetrievalResponse;
@@ -19,9 +22,11 @@ import org.ielts.playground.model.response.WritingTestRetrievalResponse;
 import org.ielts.playground.repository.ComponentRepository;
 import org.ielts.playground.repository.ExamAnswerRepository;
 import org.ielts.playground.repository.ExamEvalRepository;
+import org.ielts.playground.repository.ExamRepository;
 import org.ielts.playground.repository.ExamTestRepository;
 import org.ielts.playground.repository.UserRepository;
 import org.ielts.playground.service.ExamService;
+import org.ielts.playground.utils.SecurityUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -31,27 +36,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class ExamServiceImpl implements ExamService {
     // private final ExamServiceImpl self;
+    private final SecurityUtils securityUtils;
+
     private final ComponentRepository componentRepository;
+    private final ExamRepository examRepository;
     private final ExamTestRepository examTestRepository;
     private final ExamAnswerRepository examAnswerRepository;
-
     private final ExamEvalRepository examEvalRepository;
     private final UserRepository userRepository;
 
     public ExamServiceImpl(
             // @Lazy ExamServiceImpl self,
+            SecurityUtils securityUtils,
             ComponentRepository componentRepository,
+            ExamRepository examRepository,
             ExamTestRepository examTestRepository,
             ExamAnswerRepository examAnswerRepository,
             ExamEvalRepository examEvalRepository,
             UserRepository userRepository) {
         // this.self = self;
+        this.securityUtils = securityUtils;
         this.componentRepository = componentRepository;
+        this.examRepository = examRepository;
         this.examTestRepository = examTestRepository;
         this.examAnswerRepository = examAnswerRepository;
         this.examEvalRepository = examEvalRepository;
@@ -61,8 +73,14 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public void submit(ExamSubmissionRequest request) {
         final Long examTestId = request.getExamTestId();
-        if (this.examTestRepository.findById(examTestId).isEmpty()) {
-            throw new NotFoundException(ValidationConstants.EXAM_TEST_NOT_FOUND);
+        final ExamTest examTest = this.examTestRepository.findById(examTestId)
+                .orElseThrow(() -> new NotFoundException(ValidationConstants.EXAM_TEST_NOT_FOUND));
+        final boolean isSubmitter = this.examRepository.findById(examTest.getExamId())
+                .map(Exam::getUserId)
+                .map(userId -> Objects.equals(userId, this.securityUtils.getLoggedUserId()))
+                .orElse(false);
+        if (!isSubmitter) {
+            throw new UnauthorizedRequestException(ValidationConstants.UNAUTHORIZED);
         }
         if (this.examAnswerRepository.existsByExamPartId(examTestId)) {
             throw new BadRequestException(ValidationConstants.EXAM_TEST_ALREADY_ANSWERED);

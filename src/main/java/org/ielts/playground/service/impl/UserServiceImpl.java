@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
     protected UserInfoResponse userInfoResponse(User user) {
         return Optional.ofNullable(user)
                 .map(u -> UserInfoResponse.builder()
+                    .id(u.getId())
                     .username(u.getUsername())
                     .email(u.getEmail())
                     .firstName(u.getFirstName())
@@ -79,6 +80,7 @@ public class UserServiceImpl implements UserService {
                 .phoneNumber(userRegistration.getPhoneNumber())
                 .roles(Collections.emptySet())
                 .subscription(Subscription.of(userRegistration.getSubscription()))
+                .activated(userRegistration.getActivated())
                 .build();
         this.userRepository.save(user);
     }
