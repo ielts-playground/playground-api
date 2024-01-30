@@ -16,27 +16,41 @@ services:
       - PRIVATE_KEY_BASIC_CLIENT=${PRIVATE_KEY_BASIC_CLIENT}
       - JWT_VALIDITY_IN_SECONDS=${JWT_VALIDITY_IN_SECONDS}
       - JWT_KEY=${JWT_KEY}
-      - MYSQL_HOST=${MYSQL_HOST}
-      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
       - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USERNAME=${MYSQL_USERNAME}
+      - MYSQL_USERNAME=root
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - REDIS_HOST=internal-redis
+      - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=
     ports:
       - ${PORT}:8080
     networks:
       - ielts-playground
-  internal-redis:
-    container_name: ielts-playground-api--redis
+  redis:
+    container_name: ielts-playground-redis
     labels:
       app: "ielts-playground"
     image: redis:7.0.10-alpine
     restart: always
     networks:
       - ielts-playground
+  mysql:
+    container_name: ielts-playground-mysql
+    labels:
+      app: "ielts-playground"
+    image: mysql:8.0.30
+    restart: always
+    volumes:
+      - ~/data/ielts-playground/mysql.conf:/etc/mysql/conf.d
+      - ~/data/ielts-playground/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    networks:
+      - ielts-playground
 
 networks:
   ielts-playground:
-    driver: bridge
+    name: ielts-playground-2023
+    external: true
