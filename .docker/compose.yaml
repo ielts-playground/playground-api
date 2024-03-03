@@ -1,11 +1,7 @@
 services:
-  spring-boot:
-    container_name: ielts-playground-api
+  api-2023:
     build:
       context: ..
-    labels:
-      app: "ielts-playground"
-    image: ielts-playground/playground-api:1.0
     cpus: 1.0
     mem_limit: 2048m
     mem_reservation: 128m
@@ -16,30 +12,24 @@ services:
       - PRIVATE_KEY_BASIC_CLIENT=${PRIVATE_KEY_BASIC_CLIENT}
       - JWT_VALIDITY_IN_SECONDS=${JWT_VALIDITY_IN_SECONDS}
       - JWT_KEY=${JWT_KEY}
-      - MYSQL_HOST=mysql
+      - MYSQL_HOST=mysql-2023
       - MYSQL_PORT=3306
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USERNAME=root
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - REDIS_HOST=redis
+      - REDIS_HOST=redis-2023
       - REDIS_PORT=6379
       - REDIS_PASSWORD=
     ports:
       - ${PORT}:8080
     networks:
-      - ielts-playground
-  redis:
-    container_name: ielts-playground-redis
-    labels:
-      app: "ielts-playground"
+      - ielts-playground-2023
+  redis-2023:
     image: redis:7.0.10-alpine
     restart: always
     networks:
-      - ielts-playground
-  mysql:
-    container_name: ielts-playground-mysql
-    labels:
-      app: "ielts-playground"
+      - ielts-playground-2023
+  mysql-2023:
     image: mysql:8.0.30
     restart: always
     volumes:
@@ -48,9 +38,9 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
     networks:
-      - ielts-playground
+      - ielts-playground-2023
 
 networks:
-  ielts-playground:
+  ielts-playground-2023:
     name: ielts-playground-2023
-    external: true
+    driver: bridge
