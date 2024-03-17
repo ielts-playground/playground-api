@@ -1,0 +1,2 @@
+ALTER TABLE exam_answer
+ADD COLUMN skill VARCHAR(255) NOT NULL;

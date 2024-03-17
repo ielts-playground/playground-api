@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface ExamEvalRepository extends CrudRepository<ExamEval, Long> {
 
     @Query(value = " SELECT " +
-            "    DISTINCT e.id AS exam_id, u.username " +
+            "    DISTINCT e.id AS exam_id, u.username, u.first_name, u.last_name, e.created_at " +
             "FROM exam e " +
             "         LEFT JOIN exam_eval ee on e.id = ee.exam_id " +
             "         LEFT JOIN user u on u.id = e.user_id " +

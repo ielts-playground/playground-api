@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.Tuple;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,11 +86,12 @@ public class ExamServiceImpl implements ExamService {
         if (this.examAnswerRepository.existsByExamPartId(examTestId)) {
             throw new BadRequestException(ValidationConstants.EXAM_TEST_ALREADY_ANSWERED);
         }
-
+        final PartType skill = PartType.of(request.getSkill());
         final List<ExamAnswer> examAnswers = new ArrayList<>();
         request.getAnswers().forEach((key, value) -> {
             examAnswers.add(ExamAnswer.builder()
                     .examTestId(examTestId)
+                    .skill(skill)
                     .examPartId(-1L) // ignored
                     .kei(key)
                     .value(value)
@@ -145,7 +147,13 @@ public class ExamServiceImpl implements ExamService {
 
         Long allExam = examEvalRepository.getAllExamIdNotGraded();
         ResultAllExamIdResponse resultAllExamIdResponse = ResultAllExamIdResponse.builder()
-                .examIds(examPage.stream().map(e-> new ExamIdDTO(e.get(0, BigInteger.class).longValue(), e.get(1, String.class))).collect(Collectors.toList()))
+                .examIds(examPage.stream().map(e-> new ExamIdDTO(
+                        e.get(0, BigInteger.class).longValue(),
+                        e.get(1, String.class),
+                        e.get(2, String.class),
+                        e.get(3, String.class),
+                        e.get(4, Timestamp.class).toString()
+                )).collect(Collectors.toList()))
                 .page(page)
                 .size(size)
                 .total(allExam)

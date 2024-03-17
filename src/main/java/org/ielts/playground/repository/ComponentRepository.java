@@ -19,8 +19,10 @@ public interface ComponentRepository extends CrudRepository<Component, Long> {
     @Query(value = " SELECT c AS component, p.number as partNumber " +
             " FROM Component c " +
             " LEFT JOIN Part p ON p.id = c.partId " +
+            " LEFT JOIN Test t on p.testId = t.id" +
             " LEFT JOIN ExamTest et ON et.testId = p.testId " +
-            " WHERE et.examId = :examId AND p.type = :partType ")
+            " WHERE et.examId = :examId AND p.type = :partType" +
+            " GROUP BY c.id, p.type, p.number")
     List<ComponentWithPartNumber> findByExamIdAndPartType(
             @Param("examId") Long examId,
             @Param("partType") PartType partType);
