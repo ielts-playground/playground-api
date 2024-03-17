@@ -18,5 +18,8 @@ public class ExamSubmissionRequest {
     private Long examTestId;
 
     @NotNull
+    private String skill;
+
+    @NotNull
     private Map<String, String> answers;
 }

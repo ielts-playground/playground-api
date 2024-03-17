@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.ielts.playground.common.enumeration.PartType;
 
 @Data
 @Builder
@@ -28,6 +29,9 @@ public class ExamAnswer extends BaseEntity {
 
     @Column(name = "exam_part_id")
     private Long examPartId;
+
+    @Column(name = "skill")
+    private PartType skill;
 
     @Column(name = "exam_test_id")
     private Long examTestId;

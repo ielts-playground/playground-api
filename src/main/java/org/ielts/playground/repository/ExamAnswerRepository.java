@@ -11,15 +11,11 @@ import java.util.List;
 public interface ExamAnswerRepository extends CrudRepository<ExamAnswer, Long> {
     boolean existsByExamPartId(Long examPartId);
 
-    @Query(value = " SELECT ea FROM ExamAnswer ea " +
+    @Query(value = " SELECT ea FROM ExamAnswer ea            " +
             " LEFT JOIN ExamTest et ON et.id = ea.examTestId " +
             " WHERE " +
             "   et.examId = :examId AND " +
-            "   et.testId IN ( " +
-            "     SELECT DISTINCT p.testId " +
-            "     FROM Part p " +
-            "     WHERE p.testId = et.testId AND p.type = :partType " +
-            "   ) ")
+            "   ea.skill = :partType ")
     List<ExamAnswer> findByExamIdAndPartType(
             @Param("examId") Long examId,
             @Param("partType") PartType partType);

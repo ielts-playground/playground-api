@@ -186,4 +186,15 @@
                 path="sql/21-add-column-subscription-to-table-test.sql"
         />
     </changeSet>
+    <changeSet id="22-add-column-skill-to-table-exam-answer" author="Tuanm">
+        <preConditions>
+            <not>
+                <columnExists tableName="exam_answer" columnName="skill"/>
+            </not>
+        </preConditions>
+        <sqlFile
+                relativeToChangelogFile="true"
+                path="sql/22-add-column-skill-to-table-exam-answer.sql"
+        />
+    </changeSet>
 </databaseChangeLog>
